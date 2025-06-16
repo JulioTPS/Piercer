@@ -22,12 +22,5 @@ public class GameManager : MonoBehaviour
         {
             SpawnRandomPiece();
         }
-
-        // timer += Time.deltaTime;
-        // if (timer >= spawnInterval)
-        // {
-
-        //     timer = 0f;
-        // }
     }
 }
