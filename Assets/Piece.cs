@@ -1,9 +1,8 @@
-using UnityEngine;
 using System;
+using UnityEngine;
 
 public class Piece : MonoBehaviour
 {
-
     public Vector3 spawnOffset;
     public static event Action OnPiecePlaced;
     public Color blockColor;
@@ -61,9 +60,18 @@ public class Piece : MonoBehaviour
             rb.isKinematic = true;
             rb.useGravity = false;
             targetRotation = Quaternion.Euler(euler.x, euler.y, snappedZ);
-            transform.SetPositionAndRotation(new Vector3(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y), transform.position.z), targetRotation);
+            Debug.Log(spawnOffset);
+            transform.SetPositionAndRotation(
+                new Vector3(
+                    Mathf.Round(transform.position.x + spawnOffset.x) - spawnOffset.x,
+                    Mathf.Round(transform.position.y + spawnOffset.y) - spawnOffset.y,
+                    transform.position.z
+                ),
+                targetRotation
+            );
         }
     }
+
     private void HandleRotation()
     {
         if (Input.GetKey(KeyCode.Q))
@@ -74,8 +82,13 @@ public class Piece : MonoBehaviour
         {
             targetRotation *= Quaternion.Euler(0f, 0f, -90f * Time.deltaTime);
         }
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+        transform.rotation = Quaternion.Lerp(
+            transform.rotation,
+            targetRotation,
+            Time.deltaTime * 10f
+        );
     }
+
     void OnMouseDown()
     {
         if (isBeingPlaced)

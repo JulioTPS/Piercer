@@ -646,23 +646,15 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   pieces:
-  - piece: {fileID: 7559404326813296323, guid: 9cd5224ac77770946acfd50e34d64f1c, type: 3}
-    spawnOffset: {x: 0, y: -0.5, z: 0}
-  - piece: {fileID: 2117969204365406085, guid: dd9157edd01e39b45af0002ad91d1654, type: 3}
-    spawnOffset: {x: -0.5, y: 0, z: 0}
-  - piece: {fileID: 2117969204365406085, guid: 3dd56838e131c60449974ced5ac1b1fd, type: 3}
-    spawnOffset: {x: -0.5, y: 0, z: 0}
-  - piece: {fileID: 2117969204365406085, guid: e98ee035855e2674fa9ebc541b22be8c, type: 3}
-    spawnOffset: {x: 0, y: 0, z: 0}
-  - piece: {fileID: 2117969204365406085, guid: 4d839db3168f9ed49af1664b46f8d7c6, type: 3}
-    spawnOffset: {x: -0.5, y: 0, z: 0}
-  - piece: {fileID: 2117969204365406085, guid: 059141cc43becb84f952f7b48e7cb315, type: 3}
-    spawnOffset: {x: -0.5, y: 0, z: 0}
-  - piece: {fileID: 2117969204365406085, guid: 688a54fe910b16549979f378d0af4221, type: 3}
-    spawnOffset: {x: -0.5, y: 0, z: 0}
+  - {fileID: 7559404326813296323, guid: 9cd5224ac77770946acfd50e34d64f1c, type: 3}
+  - {fileID: 2117969204365406085, guid: dd9157edd01e39b45af0002ad91d1654, type: 3}
+  - {fileID: 2117969204365406085, guid: 3dd56838e131c60449974ced5ac1b1fd, type: 3}
+  - {fileID: 2117969204365406085, guid: e98ee035855e2674fa9ebc541b22be8c, type: 3}
+  - {fileID: 2117969204365406085, guid: 4d839db3168f9ed49af1664b46f8d7c6, type: 3}
+  - {fileID: 2117969204365406085, guid: 688a54fe910b16549979f378d0af4221, type: 3}
+  - {fileID: 2117969204365406085, guid: 059141cc43becb84f952f7b48e7cb315, type: 3}
   spawnPosition: {x: 0, y: 21, z: 0}
   points: 0
-  spawnInterval: 3
 --- !u!4 &2023623916
 Transform:
   m_ObjectHideFlags: 0
