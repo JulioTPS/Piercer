@@ -4,9 +4,12 @@ using System;
 public class Piece : MonoBehaviour
 {
 
+    public Vector3 spawnOffset;
     public static event Action OnPiecePlaced;
     public Color blockColor;
     private bool isDragging = false;
+
+    private bool isBeingPlaced = false;
     private Vector3 offset;
     private Camera mainCamera;
 
@@ -27,32 +30,36 @@ public class Piece : MonoBehaviour
 
     void Update()
     {
-        if (isDragging)
+        if (!isBeingPlaced)
         {
-            HandleRotation();
-            Vector3 mousePos = Input.mousePosition;
-            mousePos.z = Mathf.Abs(mainCamera.WorldToScreenPoint(transform.position).z);
-            Vector3 worldPos = mainCamera.ScreenToWorldPoint(mousePos) + offset;
-            transform.position = new Vector3(worldPos.x, worldPos.y, transform.position.z);
-        }
+            if (isDragging)
+            {
+                HandleRotation();
+                Vector3 mousePos = Input.mousePosition;
+                mousePos.z = Mathf.Abs(mainCamera.WorldToScreenPoint(transform.position).z);
+                Vector3 worldPos = mainCamera.ScreenToWorldPoint(mousePos) + offset;
+                transform.position = new Vector3(worldPos.x, worldPos.y, transform.position.z);
+            }
 
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            PlacePiece();
-            OnPiecePlaced?.Invoke();
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                isDragging = false;
+                PlacePiece();
+                OnPiecePlaced?.Invoke();
+            }
         }
     }
 
     private void PlacePiece()
     {
-        rb.isKinematic = false;
-        rb.useGravity = false;
-        isDragging = false;
         Vector3 euler = transform.eulerAngles;
         float z = euler.z;
         float snappedZ = Mathf.Round(z / 90f) * 90f;
         if (Mathf.Abs(Mathf.DeltaAngle(z, snappedZ)) <= 20f)
         {
+            isBeingPlaced = true;
+            rb.isKinematic = true;
+            rb.useGravity = false;
             targetRotation = Quaternion.Euler(euler.x, euler.y, snappedZ);
             transform.SetPositionAndRotation(new Vector3(Mathf.Round(transform.position.x), Mathf.Round(transform.position.y), transform.position.z), targetRotation);
         }
@@ -71,6 +78,8 @@ public class Piece : MonoBehaviour
     }
     void OnMouseDown()
     {
+        if (isBeingPlaced)
+            return;
         isDragging = true;
         targetRotation = transform.rotation;
         Vector3 mousePos = Input.mousePosition;
@@ -84,6 +93,8 @@ public class Piece : MonoBehaviour
 
     void OnMouseUp()
     {
+        if (isBeingPlaced)
+            return;
         isDragging = false;
         rb.isKinematic = false;
         rb.useGravity = true;
