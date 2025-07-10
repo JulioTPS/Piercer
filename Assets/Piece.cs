@@ -6,8 +6,8 @@ public class Piece : MonoBehaviour
     public Vector3 spawnOffset;
     public static event Action OnPiecePlaced;
     public Color blockColor;
+    public char type;
     private bool isDragging = false;
-
     private bool isBeingPlaced = false;
     private Vector3 offset;
     private Camera mainCamera;
@@ -49,7 +49,7 @@ public class Piece : MonoBehaviour
         }
     }
 
-    private void PlacePiece()
+    private async void PlacePiece()
     {
         Vector3 euler = transform.eulerAngles;
         float z = euler.z;
@@ -60,15 +60,32 @@ public class Piece : MonoBehaviour
             rb.isKinematic = true;
             rb.useGravity = false;
             targetRotation = Quaternion.Euler(euler.x, euler.y, snappedZ);
-            Debug.Log(spawnOffset);
+            Vector3 rotatedOffset = targetRotation * spawnOffset;
             transform.SetPositionAndRotation(
                 new Vector3(
-                    Mathf.Round(transform.position.x + spawnOffset.x) - spawnOffset.x,
-                    Mathf.Round(transform.position.y + spawnOffset.y) - spawnOffset.y,
+                    Mathf.Round(transform.position.x + rotatedOffset.x) - rotatedOffset.x,
+                    Mathf.Round(transform.position.y + rotatedOffset.y) - rotatedOffset.y,
                     transform.position.z
                 ),
                 targetRotation
             );
+
+            int minY = 0;
+            int maxY = 0;
+            while (transform.childCount > 0)
+            {
+                Transform blockTransform = transform.GetChild(0);
+                int gridY = GridManager.Instance.SetCell(blockTransform, type, blockColor);
+                blockTransform.SetParent(GridManager.Instance.transform, true);
+
+                if (gridY < minY)
+                    minY = gridY;
+                else if (gridY > maxY)
+                    maxY = gridY;
+            }
+            Destroy(gameObject);
+
+            await GridManager.Instance.CheckLines(minY, maxY);
         }
     }
 

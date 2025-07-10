@@ -230,12 +230,16 @@ PrefabInstance:
     m_TransformParent: {fileID: 3325571962509261628}
     m_Modifications:
     - target: {fileID: -6758766428152544013, guid: ea6cb6689d6593b41b90c532623309eb, type: 3}
+      propertyPath: type
+      value: 105
+      objectReference: {fileID: 0}
+    - target: {fileID: -6758766428152544013, guid: ea6cb6689d6593b41b90c532623309eb, type: 3}
       propertyPath: blockColor.b
-      value: 0.5568628
+      value: 0.47452024
       objectReference: {fileID: 0}
     - target: {fileID: -6758766428152544013, guid: ea6cb6689d6593b41b90c532623309eb, type: 3}
       propertyPath: blockColor.g
-      value: 0.059585042
+      value: 0.5568628
       objectReference: {fileID: 0}
     - target: {fileID: -6758766428152544013, guid: ea6cb6689d6593b41b90c532623309eb, type: 3}
       propertyPath: blockColor.r

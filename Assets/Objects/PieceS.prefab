@@ -293,16 +293,20 @@ PrefabInstance:
     m_TransformParent: {fileID: 920618871697633745}
     m_Modifications:
     - target: {fileID: -6758766428152544013, guid: ea6cb6689d6593b41b90c532623309eb, type: 3}
+      propertyPath: type
+      value: 115
+      objectReference: {fileID: 0}
+    - target: {fileID: -6758766428152544013, guid: ea6cb6689d6593b41b90c532623309eb, type: 3}
       propertyPath: blockColor.b
-      value: 0.57084996
+      value: 0.67058825
       objectReference: {fileID: 0}
     - target: {fileID: -6758766428152544013, guid: ea6cb6689d6593b41b90c532623309eb, type: 3}
       propertyPath: blockColor.g
-      value: 0
+      value: 0.0102534685
       objectReference: {fileID: 0}
     - target: {fileID: -6758766428152544013, guid: ea6cb6689d6593b41b90c532623309eb, type: 3}
       propertyPath: blockColor.r
-      value: 0.6698113
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: -6758766428152544013, guid: ea6cb6689d6593b41b90c532623309eb, type: 3}
       propertyPath: spawnOffset.x
