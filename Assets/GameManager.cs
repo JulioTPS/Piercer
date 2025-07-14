@@ -1,39 +1,64 @@
-using UnityEngine;
 using System.Collections.Generic;
-[System.Serializable]
-public struct SpawnEntry
-{
-    public GameObject piece;
-    public Vector3 spawnOffset;
-}
-
+using TMPro;
+using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
+    public List<GameObject> pieces;
+    private List<GameObject> piecesBag = new List<GameObject>();
+    public Vector3 spawnPosition = new Vector3(0, 21, 0);
+    public int score = 0;
+    public static GameManager Instance;
+    public TextMeshPro scoreText;
 
-    public List<SpawnEntry> pieces;
-    public Vector3 spawnPosition = new Vector3(-1, 20, 0);
-    public int points = 0;
-    public Time gameTime = new Time();
-
-    public float spawnInterval = 3f;
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
 
     void Start() { }
 
     void SpawnRandomPiece()
     {
-        if (pieces == null || pieces.Count == 0)
-            return;
+        if (piecesBag.Count == 0)
+        {
+            piecesBag.AddRange(pieces);
+            for (int i = piecesBag.Count - 1; i > 0; i--)
+            {
+                int randomIndex = Random.Range(0, i + 1);
+                (piecesBag[randomIndex], piecesBag[i]) = (piecesBag[i], piecesBag[randomIndex]);
+            }
+        }
 
-        var piceSelected = pieces[Random.Range(0, pieces.Count)];
-        Instantiate(piceSelected.piece, spawnPosition + piceSelected.spawnOffset, Quaternion.identity);
+        var piceSelected = piecesBag[0];
+        Instantiate(
+            piceSelected,
+            spawnPosition - piceSelected.transform.GetChild(0).GetComponent<Piece>().spawnOffset,
+            Quaternion.identity
+        );
+        piecesBag.RemoveAt(0);
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space)) // replace with any key you want
+        if (Input.GetKeyDown(KeyCode.Space))
         {
             SpawnRandomPiece();
         }
+    }
+
+    public void AddScore(int _score)
+    {
+        score += _score * 100;
+
+        scoreText.text = "Score: " + score;
     }
 }

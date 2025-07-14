@@ -1,9 +1,13 @@
+using System;
 using UnityEngine;
 
 public class Piece : MonoBehaviour
 {
+    public Vector3 spawnOffset;
     public Color blockColor;
+    public char type;
     private bool isDragging = false;
+    private bool isBeingPlaced = false;
     private Vector3 offset;
     private Camera mainCamera;
 
@@ -24,17 +28,62 @@ public class Piece : MonoBehaviour
 
     void Update()
     {
-        if (isDragging)
+        if (!isBeingPlaced)
         {
-            HandleRotation();
-        }
+            if (isDragging)
+            {
+                HandleRotation();
+                Vector3 mousePos = Input.mousePosition;
+                mousePos.z = Mathf.Abs(mainCamera.WorldToScreenPoint(transform.position).z);
+                Vector3 worldPos = mainCamera.ScreenToWorldPoint(mousePos) + offset;
+                transform.position = new Vector3(worldPos.x, worldPos.y, transform.position.z);
+            }
 
-        if (isDragging)
+            if (Input.GetKeyDown(KeyCode.F))
+            {
+                isDragging = false;
+                PlacePiece();
+            }
+        }
+    }
+
+    private void PlacePiece()
+    {
+        Vector3 euler = transform.eulerAngles;
+        float z = euler.z;
+        float snappedZ = Mathf.Round(z / 90f) * 90f;
+        if (Mathf.Abs(Mathf.DeltaAngle(z, snappedZ)) <= 20f)
         {
-            Vector3 mousePos = Input.mousePosition;
-            mousePos.z = Mathf.Abs(mainCamera.WorldToScreenPoint(transform.position).z);
-            Vector3 worldPos = mainCamera.ScreenToWorldPoint(mousePos) + offset;
-            transform.position = new Vector3(worldPos.x, worldPos.y, transform.position.z);
+            isBeingPlaced = true;
+            rb.isKinematic = true;
+            rb.useGravity = false;
+            targetRotation = Quaternion.Euler(euler.x, euler.y, snappedZ);
+            Vector3 rotatedOffset = targetRotation * spawnOffset;
+            transform.SetPositionAndRotation(
+                new Vector3(
+                    Mathf.Round(transform.position.x + rotatedOffset.x) - rotatedOffset.x,
+                    Mathf.Round(transform.position.y + rotatedOffset.y) - rotatedOffset.y,
+                    transform.position.z
+                ),
+                targetRotation
+            );
+
+            int minY = int.MaxValue;
+            int maxY = int.MinValue;
+            while (transform.childCount > 0)
+            {
+                Transform blockTransform = transform.GetChild(0);
+                int gridY = GridManager.Instance.SetCell(blockTransform, type);
+                blockTransform.SetParent(GridManager.Instance.transform, true);
+
+                if (gridY < minY)
+                    minY = gridY;
+                if (gridY > maxY)
+                    maxY = gridY;
+            }
+            Destroy(gameObject);
+
+            GridManager.Instance.CheckLines(minY, maxY);
         }
     }
 
@@ -48,10 +97,17 @@ public class Piece : MonoBehaviour
         {
             targetRotation *= Quaternion.Euler(0f, 0f, -90f * Time.deltaTime);
         }
-        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, Time.deltaTime * 10f);
+        transform.rotation = Quaternion.Lerp(
+            transform.rotation,
+            targetRotation,
+            Time.deltaTime * 10f
+        );
     }
+
     void OnMouseDown()
     {
+        if (isBeingPlaced)
+            return;
         isDragging = true;
         targetRotation = transform.rotation;
         Vector3 mousePos = Input.mousePosition;
@@ -65,6 +121,8 @@ public class Piece : MonoBehaviour
 
     void OnMouseUp()
     {
+        if (isBeingPlaced)
+            return;
         isDragging = false;
         rb.isKinematic = false;
         rb.useGravity = true;
