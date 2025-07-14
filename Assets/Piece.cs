@@ -81,9 +81,10 @@ public class Piece : MonoBehaviour
                 if (gridY > maxY)
                     maxY = gridY;
             }
-            Destroy(gameObject);
-
             GridManager.Instance.CheckLines(minY, maxY);
+
+            Destroy(transform.root.gameObject);
+            return;
         }
     }
 
@@ -91,11 +92,11 @@ public class Piece : MonoBehaviour
     {
         if (Input.GetKey(KeyCode.Q))
         {
-            targetRotation *= Quaternion.Euler(0f, 0f, 90f * Time.deltaTime);
+            targetRotation *= Quaternion.Euler(0f, 0f, 180f * Time.deltaTime);
         }
         else if (Input.GetKey(KeyCode.E))
         {
-            targetRotation *= Quaternion.Euler(0f, 0f, -90f * Time.deltaTime);
+            targetRotation *= Quaternion.Euler(0f, 0f, -180f * Time.deltaTime);
         }
         transform.rotation = Quaternion.Lerp(
             transform.rotation,
