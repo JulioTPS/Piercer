@@ -4,7 +4,6 @@ using UnityEngine;
 public class Piece : MonoBehaviour
 {
     public Vector3 spawnOffset;
-    public static event Action OnPiecePlaced;
     public Color blockColor;
     public char type;
     private bool isDragging = false;
@@ -44,12 +43,11 @@ public class Piece : MonoBehaviour
             {
                 isDragging = false;
                 PlacePiece();
-                OnPiecePlaced?.Invoke();
             }
         }
     }
 
-    private async void PlacePiece()
+    private void PlacePiece()
     {
         Vector3 euler = transform.eulerAngles;
         float z = euler.z;
@@ -70,22 +68,22 @@ public class Piece : MonoBehaviour
                 targetRotation
             );
 
-            int minY = 0;
-            int maxY = 0;
+            int minY = int.MaxValue;
+            int maxY = int.MinValue;
             while (transform.childCount > 0)
             {
                 Transform blockTransform = transform.GetChild(0);
-                int gridY = GridManager.Instance.SetCell(blockTransform, type, blockColor);
+                int gridY = GridManager.Instance.SetCell(blockTransform, type);
                 blockTransform.SetParent(GridManager.Instance.transform, true);
 
                 if (gridY < minY)
                     minY = gridY;
-                else if (gridY > maxY)
+                if (gridY > maxY)
                     maxY = gridY;
             }
             Destroy(gameObject);
 
-            await GridManager.Instance.CheckLines(minY, maxY);
+            GridManager.Instance.CheckLines(minY, maxY);
         }
     }
 
