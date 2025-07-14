@@ -595,7 +595,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1063870680
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -769,7 +769,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1161497520
 Transform:
   m_ObjectHideFlags: 0
@@ -825,6 +825,7 @@ MonoBehaviour:
   - {fileID: 2117969204365406085, guid: 059141cc43becb84f952f7b48e7cb315, type: 3}
   spawnPosition: {x: 0, y: 21, z: 0}
   score: 0
+  scoreText: {fileID: 0}
 --- !u!4 &2023623916
 Transform:
   m_ObjectHideFlags: 0
