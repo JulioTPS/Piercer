@@ -1,25 +1,53 @@
 using System;
 using UnityEngine;
 
+public struct RotationState
+{
+    public bool isRotating;
+    public bool isPressingQ;
+
+    public RotationState(bool isRotating = false, bool isPressingQ = false)
+    {
+        this.isRotating = false;
+        this.isPressingQ = false;
+    }
+
+    public void Set(bool isRotating, bool isPressingQ)
+    {
+        this.isRotating = isRotating;
+        this.isPressingQ = isPressingQ;
+    }
+}
+
 public class Piece : MonoBehaviour
 {
     public Vector3 spawnOffset;
     public Color blockColor;
     public char type;
-    private bool isDragging = false;
+    public float movementStrenght = 50f;
+    public float movementDamping = 8f;
+    public float movementDampingDefault = 0f;
+    public float torqueStrenght = 50f;
+    public float torqueDamping = 10f;
+    public float torqueDampingDefault = 0.01f;
     private bool isBeingPlaced = false;
-    private Vector3 offset;
+    private bool isDragging = false;
+    private Vector3 movementDirection = Vector3.zero;
     private Camera mainCamera;
-
+    private Vector3 mousePosition;
     private Rigidbody rb;
-
     private Quaternion targetRotation;
+
+    private RotationState rotationState = new();
 
     void Start()
     {
-        mainCamera = Camera.main;
         targetRotation = transform.rotation;
+        mainCamera = Camera.main;
         rb = GetComponent<Rigidbody>();
+        rb.angularDamping = torqueDampingDefault;
+        rb.linearDamping = movementDampingDefault;
+
         foreach (Block block in GetComponentsInChildren<Block>())
         {
             block.SetColor(blockColor);
@@ -30,22 +58,78 @@ public class Piece : MonoBehaviour
     {
         if (!isBeingPlaced)
         {
-            if (isDragging)
+            bool isPressingQ = Input.GetKey(KeyCode.Q);
+            if (isPressingQ || Input.GetKey(KeyCode.E))
             {
-                HandleRotation();
-                Vector3 mousePos = Input.mousePosition;
-                mousePos.z = Mathf.Abs(mainCamera.WorldToScreenPoint(transform.position).z);
-                Vector3 worldPos = mainCamera.ScreenToWorldPoint(mousePos) + offset;
-                transform.position = new Vector3(worldPos.x, worldPos.y, transform.position.z);
+                rotationState.isRotating = true;
+                rotationState.isPressingQ = isPressingQ;
+            }
+            else if (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.E))
+            {
+                rb.angularDamping = torqueDampingDefault;
+                rotationState.isRotating = false;
+                rotationState.isPressingQ = false;
             }
 
             if (Input.GetKeyDown(KeyCode.F))
             {
-                isDragging = false;
                 PlacePiece();
             }
         }
     }
+
+    void FixedUpdate()
+    {
+        if (!isBeingPlaced)
+        {
+            if (rotationState.isRotating)
+            {
+                HandleRotation(rotationState.isPressingQ);
+            }
+
+            if (isDragging)
+            {
+                rb.AddForce(movementDirection, ForceMode.Force);
+            }
+        }
+    }
+
+    void OnMouseDown()
+    {
+        if (isBeingPlaced)
+            return;
+        rb.useGravity = false;
+        mousePosition = Input.mousePosition - mainCamera.WorldToScreenPoint(transform.position);
+    }
+
+    private void OnMouseDrag()
+    {
+        Vector3 targetWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition - mousePosition);
+        Vector3 direction = targetWorldPos - transform.position;
+        direction.z = 0f;
+        movementDirection = direction * movementStrenght;
+        rb.linearDamping = movementDamping;
+
+        isDragging = true;
+    }
+
+    private void OnMouseUp()
+    {
+        if (isBeingPlaced)
+            return;
+        isDragging = false;
+        rb.useGravity = true;
+        rb.linearDamping = movementDampingDefault;
+    }
+
+    private void HandleRotation(bool isPressingQ)
+    {
+        Vector3 torque = new Vector3(0f, 0f, (isPressingQ ? 1f : -1f) * torqueStrenght); // Adjust 50f for rotation speed
+        rb.AddTorque(torque, ForceMode.Force);
+
+        rb.angularDamping = torqueDamping;
+    }
+
 
     private void PlacePiece()
     {
@@ -55,7 +139,7 @@ public class Piece : MonoBehaviour
         if (Mathf.Abs(Mathf.DeltaAngle(z, snappedZ)) <= 20f)
         {
             isBeingPlaced = true;
-            rb.isKinematic = true;
+            rb.isKinematic = false;
             rb.useGravity = false;
             targetRotation = Quaternion.Euler(euler.x, euler.y, snappedZ);
             Vector3 rotatedOffset = targetRotation * spawnOffset;
@@ -86,46 +170,5 @@ public class Piece : MonoBehaviour
             Destroy(transform.root.gameObject);
             return;
         }
-    }
-
-    private void HandleRotation()
-    {
-        if (Input.GetKey(KeyCode.Q))
-        {
-            targetRotation *= Quaternion.Euler(0f, 0f, 180f * Time.deltaTime);
-        }
-        else if (Input.GetKey(KeyCode.E))
-        {
-            targetRotation *= Quaternion.Euler(0f, 0f, -180f * Time.deltaTime);
-        }
-        transform.rotation = Quaternion.Lerp(
-            transform.rotation,
-            targetRotation,
-            Time.deltaTime * 10f
-        );
-    }
-
-    void OnMouseDown()
-    {
-        if (isBeingPlaced)
-            return;
-        isDragging = true;
-        targetRotation = transform.rotation;
-        Vector3 mousePos = Input.mousePosition;
-        mousePos.z = Mathf.Abs(mainCamera.WorldToScreenPoint(transform.position).z);
-        Vector3 worldPos = mainCamera.ScreenToWorldPoint(mousePos);
-        offset = transform.position - worldPos;
-
-        rb.useGravity = false;
-        rb.isKinematic = true;
-    }
-
-    void OnMouseUp()
-    {
-        if (isBeingPlaced)
-            return;
-        isDragging = false;
-        rb.isKinematic = false;
-        rb.useGravity = true;
     }
 }
