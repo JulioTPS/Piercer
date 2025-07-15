@@ -45,7 +45,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f555904bd5c8fd45b1994ee5883c84e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blockColor: {r: 1, g: 1, b: 1, a: 0}
+  spawnOffset: {x: 0, y: 0, z: 0}
+  blockColor: {r: 0, g: 0, b: 0, a: 0}
+  type: 0
+  movementStrenght: 50
+  movementDamping: 8
+  movementDampingDefault: 0
+  torqueStrenght: 16
+  torqueDamping: 2
+  torqueDampingDefault: 0.01
 --- !u!54 &-6222970261078009986
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -56,7 +64,7 @@ Rigidbody:
   serializedVersion: 4
   m_Mass: 1
   m_Drag: 0
-  m_AngularDrag: 0.05
+  m_AngularDrag: 0.1
   m_CenterOfMass: {x: 0, y: 0, z: 0}
   m_InertiaTensor: {x: 1, y: 1, z: 1}
   m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
@@ -70,6 +78,6 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 56
-  m_CollisionDetection: 0
+  m_CollisionDetection: 2
