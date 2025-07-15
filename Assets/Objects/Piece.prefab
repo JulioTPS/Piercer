@@ -46,13 +46,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   spawnOffset: {x: 0, y: 0, z: 0}
-  blockColor: {r: 1, g: 1, b: 1, a: 0}
+  blockColor: {r: 0, g: 0, b: 0, a: 0}
   type: 0
   movementStrenght: 50
   movementDamping: 8
   movementDampingDefault: 0
-  torqueStrenght: 20
-  torqueDamping: 15
+  torqueStrenght: 16
+  torqueDamping: 2
   torqueDampingDefault: 0.01
 --- !u!54 &-6222970261078009986
 Rigidbody:

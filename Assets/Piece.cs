@@ -27,18 +27,18 @@ public class Piece : MonoBehaviour
     public float movementStrenght = 50f;
     public float movementDamping = 8f;
     public float movementDampingDefault = 0f;
-    public float torqueStrenght = 50f;
-    public float torqueDamping = 10f;
+    public float torqueStrenght = 16f;
+    public float torqueDamping = 2f;
     public float torqueDampingDefault = 0.01f;
     private bool isBeingPlaced = false;
     private bool isDragging = false;
     private Vector3 movementDirection = Vector3.zero;
     private Camera mainCamera;
-    private Vector3 mousePosition;
+    private Vector3 mouseOffset;
     private Rigidbody rb;
     private Quaternion targetRotation;
-
     private RotationState rotationState = new();
+    // private float timer;
 
     void Start()
     {
@@ -66,9 +66,10 @@ public class Piece : MonoBehaviour
             }
             else if (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.E))
             {
-                rb.angularDamping = torqueDampingDefault;
                 rotationState.isRotating = false;
                 rotationState.isPressingQ = false;
+                if (!isDragging)
+                    rb.angularDamping = torqueDampingDefault;
             }
 
             if (Input.GetKeyDown(KeyCode.F))
@@ -80,11 +81,20 @@ public class Piece : MonoBehaviour
 
     void FixedUpdate()
     {
+        // timer += Time.fixedDeltaTime;
+        // if (timer >= 2.0f)
+        // {
+        //     Debug.Log("toruqe damping: " + rb.angularDamping);
+        //     timer = 0f;
+        // }
         if (!isBeingPlaced)
         {
             if (rotationState.isRotating)
             {
-                HandleRotation(rotationState.isPressingQ);
+                Vector3 torque = new(0f, 0f, (rotationState.isPressingQ ? 1f : -1f) * torqueStrenght);
+                rb.AddTorque(torque, ForceMode.Force);
+
+                rb.angularDamping = torqueDamping;
             }
 
             if (isDragging)
@@ -99,18 +109,19 @@ public class Piece : MonoBehaviour
         if (isBeingPlaced)
             return;
         rb.useGravity = false;
-        mousePosition = Input.mousePosition - mainCamera.WorldToScreenPoint(transform.position);
+        mouseOffset = Input.mousePosition - mainCamera.WorldToScreenPoint(transform.position);
+
+        rb.angularDamping = torqueDamping;
+        isDragging = true;
     }
 
     private void OnMouseDrag()
     {
-        Vector3 targetWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition - mousePosition);
+        Vector3 targetWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition - mouseOffset);
         Vector3 direction = targetWorldPos - transform.position;
         direction.z = 0f;
         movementDirection = direction * movementStrenght;
         rb.linearDamping = movementDamping;
-
-        isDragging = true;
     }
 
     private void OnMouseUp()
@@ -120,16 +131,8 @@ public class Piece : MonoBehaviour
         isDragging = false;
         rb.useGravity = true;
         rb.linearDamping = movementDampingDefault;
+        rb.angularDamping = torqueDampingDefault;
     }
-
-    private void HandleRotation(bool isPressingQ)
-    {
-        Vector3 torque = new Vector3(0f, 0f, (isPressingQ ? 1f : -1f) * torqueStrenght); // Adjust 50f for rotation speed
-        rb.AddTorque(torque, ForceMode.Force);
-
-        rb.angularDamping = torqueDamping;
-    }
-
 
     private void PlacePiece()
     {
@@ -158,6 +161,12 @@ public class Piece : MonoBehaviour
             {
                 Transform blockTransform = transform.GetChild(0);
                 int gridY = GridManager.Instance.SetCell(blockTransform, type);
+                if (gridY < 0)
+                {
+                    blockTransform.SetParent(null);
+                    Destroy(blockTransform.gameObject);
+                    continue;
+                }
                 blockTransform.SetParent(GridManager.Instance.transform, true);
 
                 if (gridY < minY)

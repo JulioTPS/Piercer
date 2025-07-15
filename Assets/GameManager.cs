@@ -5,8 +5,8 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public List<GameObject> pieces;
-    private List<GameObject> piecesBag = new List<GameObject>();
-    public Vector3 spawnPosition = new Vector3(0, 21, 0);
+    private List<GameObject> piecesBag = new();
+    public Vector3 spawnPosition = new(0, 21, 0);
     public int score = 0;
     public static GameManager Instance;
     public TextMeshPro scoreText;
