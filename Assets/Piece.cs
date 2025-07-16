@@ -1,26 +1,27 @@
 using System;
 using UnityEngine;
 
-public struct RotationState
-{
-    public bool isRotating;
-    public bool isPressingQ;
-
-    public RotationState(bool isRotating = false, bool isPressingQ = false)
-    {
-        this.isRotating = false;
-        this.isPressingQ = false;
-    }
-
-    public void Set(bool isRotating, bool isPressingQ)
-    {
-        this.isRotating = isRotating;
-        this.isPressingQ = isPressingQ;
-    }
-}
 
 public class Piece : MonoBehaviour
 {
+    private struct RotationState
+    {
+        public bool isRotating;
+        public bool isPressingQ;
+
+        public RotationState(bool isRotating = false, bool isPressingQ = false)
+        {
+            this.isRotating = isRotating;
+            this.isPressingQ = isPressingQ;
+        }
+
+        public void Set(bool isRotating, bool isPressingQ)
+        {
+            this.isRotating = isRotating;
+            this.isPressingQ = isPressingQ;
+        }
+    }
+
     public Vector3 spawnOffset;
     public Color blockColor;
     public char type;
