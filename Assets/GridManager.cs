@@ -1,25 +1,21 @@
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using UnityEngine;
 
-public struct GridCell
-{
-    public bool isOccupied;
-    public char type; //may be useful later
-    public GameObject blockObject;
-}
 
 public class GridManager : MonoBehaviour
 {
+    private struct GridCell
+    {
+        public bool isOccupied;
+        public char type; //may be useful later
+        public Transform blockTransform;
+    }
+
     [Header("Grid Settings")]
     public int gridWidth = 10;
     public int gridHeight = 19;
     public Vector3Int origin = new Vector3Int(0, 0, 0);
-
-    [Header("Block Prefabs")]
-    public GameObject blockPrefab;
 
     public static GridManager Instance;
 
@@ -52,9 +48,6 @@ public class GridManager : MonoBehaviour
 
     public int SetCell(Transform blockTransform, char type)
     {
-        if (blockTransform == null)
-            return -1;
-
         int x = Mathf.FloorToInt(blockTransform.position.x - origin.x + 0.001f);
         int y = Mathf.FloorToInt(blockTransform.position.y - origin.y + 0.001f);
 
@@ -66,7 +59,7 @@ public class GridManager : MonoBehaviour
 
         grid[x, y].isOccupied = true;
         grid[x, y].type = type;
-        grid[x, y].blockObject = blockTransform.gameObject;
+        grid[x, y].blockTransform = blockTransform;
 
         return y;
     }
@@ -106,30 +99,30 @@ public class GridManager : MonoBehaviour
         {
             for (int x = 0; x < gridWidth; x++)
             {
-                if (grid[x, y].blockObject != null)
+                if (grid[x, y].blockTransform != null)
                 {
-                    Destroy(grid[x, y].blockObject);
-                    grid[x, y].blockObject = null;
+                    Destroy(grid[x, y].blockTransform.gameObject);
+                    grid[x, y].blockTransform = null;
                     grid[x, y].type = '\0';
                     grid[x, y].isOccupied = false;
                 }
             }
         }
 
-        List<(GameObject gameObject, Vector3 startingPosition)> blocksToMove = new List<(GameObject, Vector3)>();
+        List<(Transform, Vector3)> blocksToMove = new();
         int moveAmount = lastY - firstY + 1;
         for (int y = firstY; y < gridHeight - moveAmount; y++)
         {
             for (int x = 0; x < gridWidth; x++)
             {
-                if (grid[x, y + moveAmount].blockObject != null)
+                if (grid[x, y + moveAmount].blockTransform != null)
                 {
-                    grid[x, y].blockObject = grid[x, y + moveAmount].blockObject;
-                    blocksToMove.Add((grid[x, y].blockObject, grid[x, y].blockObject.transform.position));
+                    grid[x, y].blockTransform = grid[x, y + moveAmount].blockTransform;
+                    blocksToMove.Add((grid[x, y].blockTransform, grid[x, y].blockTransform.position));
                     grid[x, y].type = grid[x, y + moveAmount].type;
                     grid[x, y].isOccupied = true;
 
-                    grid[x, y + moveAmount].blockObject = null;
+                    grid[x, y + moveAmount].blockTransform = null;
                     grid[x, y + moveAmount].type = '\0';
                     grid[x, y + moveAmount].isOccupied = false;
                 }
@@ -139,22 +132,21 @@ public class GridManager : MonoBehaviour
         StartCoroutine(MoveBlocks(blocksToMove, moveAmount));
     }
 
-    private System.Collections.IEnumerator MoveBlocks(List<(GameObject, Vector3)> blocks, int moveAmount)
+    private System.Collections.IEnumerator MoveBlocks(List<(Transform blockTransform, Vector3 startPosition)> blocksToMove, int moveAmount)
     {
-        List<(GameObject gameObject, Vector3 startPosition)> blocksToMove = blocks;
         Vector3 moveVector = Vector3.down * moveAmount;
 
         float elapsedTime = 0f;
         while (elapsedTime < animationDuration)
         {
             float progress = elapsedTime / animationDuration;
-            progress = progress * progress;
+            progress *= progress;
 
-            foreach (var block in blocksToMove)
+            foreach (var (blockTransform, startPosition) in blocksToMove)
             {
-                if (block.gameObject != null)
+                if (blockTransform != null)
                 {
-                    block.gameObject.transform.position = Vector3.Lerp(block.startPosition, block.startPosition + moveVector, progress);
+                    blockTransform.position = Vector3.Lerp(startPosition, startPosition + moveVector, progress);
                 }
             }
 
@@ -162,47 +154,12 @@ public class GridManager : MonoBehaviour
             yield return null;
         }
 
-        foreach (var block in blocksToMove)
+        foreach (var (blockTransform, startPosition) in blocksToMove)
         {
-            if (block.gameObject != null)
+            if (blockTransform != null)
             {
-                block.gameObject.transform.position = block.startPosition + moveVector;
+                blockTransform.position = startPosition + moveVector;
             }
         }
     }
-
-    // public bool RemoveBlock(int x, int y)
-    // {
-    //     if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight)
-    //         return false;
-
-    //     if (grid[x, y].blockObject != null)
-    //     {
-    //         Destroy(grid[x, y].blockObject);
-    //         grid[x, y].blockObject = null;
-    //     }
-
-    //     grid[x, y].type = 'f'; 
-    //     return true;
-    // }
-
-    // public GameObject GetBlockAt(int x, int y)
-    // {
-    //     if (x >= 0 && x < gridWidth && y >= 0 && y < gridHeight)
-    //         return grid[x, y].blockObject;
-    //     return null;
-    // }
-
-    // public Vector3 GridToWorldPosition(int x, int y)
-    // {
-    //     return new Vector3(x + origin.x, y + origin.y, origin.z);
-    // }
-
-    // public Vector2Int WorldToGridPosition(Vector3 worldPos)
-    // {
-    //     return new Vector2Int(
-    //         Mathf.RoundToInt(worldPos.x - origin.x),
-    //         Mathf.RoundToInt(worldPos.y - origin.y)
-    //     );
-    // }
 }

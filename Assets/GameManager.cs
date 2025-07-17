@@ -1,15 +1,11 @@
-using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
-    public List<GameObject> pieces;
-    private List<GameObject> piecesBag = new();
-    public Vector3 spawnPosition = new(0, 21, 0);
     public int score = 0;
     public static GameManager Instance;
-    public TextMeshPro scoreText;
+    public TextMeshPro scoreTMPro;
 
     void Awake()
     {
@@ -24,34 +20,15 @@ public class GameManager : MonoBehaviour
         }
     }
 
-    void Start() { }
-
-    void SpawnRandomPiece()
+    void Start()
     {
-        if (piecesBag.Count == 0)
-        {
-            piecesBag.AddRange(pieces);
-            for (int i = piecesBag.Count - 1; i > 0; i--)
-            {
-                int randomIndex = Random.Range(0, i + 1);
-                (piecesBag[randomIndex], piecesBag[i]) = (piecesBag[i], piecesBag[randomIndex]);
-            }
-        }
-
-        var piceSelected = piecesBag[0];
-        Instantiate(
-            piceSelected,
-            spawnPosition - piceSelected.transform.GetChild(0).GetComponent<Piece>().spawnOffset,
-            Quaternion.identity
-        );
-        piecesBag.RemoveAt(0);
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.P))
         {
-            SpawnRandomPiece();
+            AddScore(1);
         }
     }
 
@@ -59,6 +36,6 @@ public class GameManager : MonoBehaviour
     {
         score += _score * 100;
 
-        scoreText.text = "Score: " + score;
+        scoreTMPro.text = "Score: " + score;
     }
 }
