@@ -64,7 +64,7 @@ public class GridManager : MonoBehaviour
         return y;
     }
 
-    public void CheckLines(int minY = 0, int maxY = 0)
+    public void CheckAndClearLines(int minY = 0, int maxY = 0)
     {
         var linesToClear = new List<int>();
 

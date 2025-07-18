@@ -4,50 +4,17 @@ using System.Collections;
 
 public class PieceManager : MonoBehaviour
 {
-    private struct RotationState
-    {
-        public bool isRotating;
-        public bool isPressingQ;
-
-        public RotationState(bool isRotating = false, bool isPressingQ = false)
-        {
-            this.isRotating = isRotating;
-            this.isPressingQ = isPressingQ;
-        }
-
-        public void Reset()
-        {
-            isRotating = false;
-            isPressingQ = false;
-        }
-    }
-
     public List<Piece> pieces;
     public static PieceManager Instance;
-    private PieceBag pieceBag;
-    private RotationState rotationState = new();
-
-    [Header("Movement Settings")]
-    public float movementStrength = 50f;
-    public float linearDamping = 8f;
-    public float linearDampingDefault = 0f;
-
-    [Header("Rotation Settings")]
-    public float torqueStrength = 12f;
-    public float angularDamping = 2f;
-    public float angularDampingDefault = 0.1f;
-
+    public Vector3 keepPosition = new(-10, 15, 0);
     public Vector3 spawnPosition = new(0, 21, 0);
-
-    private bool isPlacingPiece = false;
-    private bool isDragging = false;
-
-    private Camera mainCamera;
-    private Vector3 mouseOffset;
-    private Vector3 movementDirection = Vector3.zero;
-    private Rigidbody activePieceRb;
+    private Piece keptPiece;
     private Piece activePiece;
-    private const float PLACING_PIECE_SNAPING_MARGIN = 0.25f;
+    private PieceBag pieceBag;
+    private bool swapPieces = false;
+
+    public float placingPieceSnappingMargin = 25f;
+
 
     void Awake()
     {
@@ -55,6 +22,7 @@ public class PieceManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            pieceBag = new PieceBag(pieces);
         }
         else
         {
@@ -62,138 +30,82 @@ public class PieceManager : MonoBehaviour
         }
     }
 
-    void Start()
-    {
-        pieceBag = new PieceBag(pieces);
-        mainCamera = Camera.main;
-
-    }
-
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Space))
-        {
-            SpawnRandomPiece();
-        }
-
-        if (isPlacingPiece)
-            return;
-
-        HandleMouseInput();
-
-        bool isPressingQ = Input.GetKey(KeyCode.Q);
-        if (isPressingQ || Input.GetKey(KeyCode.E))
-        {
-            rotationState.isRotating = true;
-            rotationState.isPressingQ = isPressingQ;
-        }
-        else if (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.E))
-        {
-            rotationState.isRotating = false;
-            rotationState.isPressingQ = false;
-            if (!isDragging)
-                activePieceRb.angularDamping = angularDampingDefault;
-        }
-
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            PlacePiece();
-        }
-    }
     void FixedUpdate()
     {
-        if (isPlacingPiece)
-            return;
-
-        if (rotationState.isRotating)
+        if (swapPieces)
         {
-            Vector3 torque = new(0f, 0f, (rotationState.isPressingQ ? 1f : -1f) * torqueStrength);
-            activePieceRb.AddTorque(torque, ForceMode.Force);
-
-            activePieceRb.angularDamping = angularDamping;
-        }
-
-        if (isDragging)
-        {
-            activePieceRb.AddForce(movementDirection, ForceMode.Force);
-        }
-    }
-
-    private void HandleMouseInput()
-    {
-        if (activePiece == null) return;
-
-        if (Input.GetMouseButtonDown(0))
-        {
-            Ray ray = mainCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out RaycastHit hit))
+            if (keptPiece != null)
             {
-                if (hit.transform.IsChildOf(activePiece.transform) || hit.transform == activePiece.transform)
-                {
-                    OnPieceMouseDown();
-                }
+                Rigidbody keptPieceRb = keptPiece.GetComponent<Rigidbody>();
+                keptPieceRb.position = keepPosition;
+                keptPieceRb.transform.rotation = Quaternion.identity;
+                keptPieceRb.isKinematic = true;
+                keptPieceRb.useGravity = false;
             }
+            if (activePiece != null)
+            {
+                Rigidbody activePieceRB = activePiece.GetComponent<Rigidbody>();
+                activePieceRB.position = spawnPosition;
+                activePieceRB.isKinematic = false;
+                activePieceRB.useGravity = true;
+            }
+            swapPieces = false;
         }
-        else if (Input.GetMouseButton(0) && isDragging)
+    }
+
+    public Piece KeepPiece()
+    {
+        if (keptPiece == null)
         {
-            OnPieceMouseHold();
+            keptPiece = activePiece;
+            SpawnNewPiece();
         }
-        else if (Input.GetMouseButtonUp(0) && isDragging)
+        else
         {
-            OnPieceMouseUp();
+            (activePiece, keptPiece) = (keptPiece, activePiece);
         }
+        swapPieces = true;
+        return activePiece;
     }
 
-
-    private void OnPieceMouseDown()
+    public Piece SpawnNewPiece()
     {
-        isDragging = true;
-        activePieceRb.useGravity = false;
-        activePieceRb.angularDamping = angularDamping;
-        activePieceRb.linearDamping = linearDamping;
-        mouseOffset = Input.mousePosition - mainCamera.WorldToScreenPoint(activePiece.transform.position);
+        activePiece = Instantiate(
+            pieceBag.GetNewPiece(),
+            spawnPosition,
+            Quaternion.identity
+        );
+        return activePiece;
     }
 
-    private void OnPieceMouseHold()
-    {
-        Vector3 targetWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition - mouseOffset);
-        Vector3 direction = targetWorldPos - activePiece.transform.position;
-        direction.z = 0f;
-        movementDirection = direction * movementStrength;
-    }
-
-    private void OnPieceMouseUp()
-    {
-        isDragging = false;
-        activePieceRb.useGravity = true;
-        activePieceRb.linearDamping = linearDampingDefault;
-        activePieceRb.angularDamping = angularDampingDefault;
-    }
-
-    private void PlacePiece()
+    public bool CanPlacePiece()
     {
         float eulerZ = activePiece.transform.eulerAngles.z;
         float snappedZ = Mathf.Round(eulerZ / 90f) * 90f;
-        if (Mathf.Abs(Mathf.DeltaAngle(eulerZ, snappedZ)) > PLACING_PIECE_SNAPING_MARGIN)
-            return;
+        return Mathf.Abs(Mathf.DeltaAngle(eulerZ, snappedZ)) <= placingPieceSnappingMargin;
+    }
+    public Piece PlacePiece()
+    {
+        Transform activePieceTransform = activePiece.transform;
+        Rigidbody activePieceRb = activePiece.GetComponent<Rigidbody>();
+        float eulerZ = activePieceTransform.eulerAngles.z;
+        float snappedZ = Mathf.Round(eulerZ / 90f) * 90f;
 
-        isPlacingPiece = true;
-        activePieceRb.isKinematic = false;
         activePieceRb.useGravity = false;
-        activePiece.transform.SetPositionAndRotation(
+        activePieceTransform.SetPositionAndRotation(
             new Vector3(
-                Mathf.Round(activePiece.transform.position.x),
-                Mathf.Round(activePiece.transform.position.y),
-                activePiece.transform.position.z
+                Mathf.Round(activePieceTransform.position.x),
+                Mathf.Round(activePieceTransform.position.y),
+                activePieceTransform.position.z
             ),
             Quaternion.Euler(0, 0, snappedZ)
         );
 
         int minY = int.MaxValue;
         int maxY = int.MinValue;
-        while (activePiece.transform.childCount > 0)
+        while (activePieceTransform.childCount > 0)
         {
-            Transform blockTransform = activePiece.transform.GetChild(0);
+            Transform blockTransform = activePieceTransform.GetChild(0);
             int gridY = GridManager.Instance.SetCell(blockTransform, activePiece.type);
             if (gridY < 0)
             {
@@ -208,30 +120,49 @@ public class PieceManager : MonoBehaviour
             if (gridY > maxY)
                 maxY = gridY;
         }
-        GridManager.Instance.CheckLines(minY, maxY);
-        StartCoroutine(DestroyAndReset());
-        return;
-    }
-
-    private IEnumerator DestroyAndReset()
-    {
+        GridManager.Instance.CheckAndClearLines(minY, maxY);
         Destroy(activePiece.transform.root.gameObject);
-        yield return null;
-        isPlacingPiece = false;
-        isDragging = false;
-        activePiece = null;
-        activePieceRb = null;
-        rotationState.Reset();
+        return SpawnNewPiece();
     }
 
-    void SpawnRandomPiece()
+}
+
+public class PieceBag
+{
+    private readonly List<Piece> pieceReferences;
+    private List<Piece> bag;
+    private Piece previousPiece;
+    private const float PIECE_REPEAT_CHANCE = 0.25f;
+
+    public PieceBag(List<Piece> pieceReferences)
     {
-        Piece piceSelected = pieceBag.GetNewPiece();
-        activePiece = Instantiate(
-            piceSelected,
-            spawnPosition,
-            Quaternion.identity
-        );
-        activePieceRb = activePiece.GetComponent<Rigidbody>();
+        this.pieceReferences = new List<Piece>(pieceReferences);
+        FillBag();
+    }
+
+    private void FillBag()
+    {
+        bag = new List<Piece>(pieceReferences);
+        do
+        {
+            for (int i = bag.Count - 1; i > 0; i--)
+            {
+                int randomIndex = Random.Range(0, i + 1);
+                (bag[randomIndex], bag[i]) = (bag[i], bag[randomIndex]);
+            }
+        } while (bag[0] == previousPiece && Random.value > PIECE_REPEAT_CHANCE);
+
+        previousPiece = bag[0];
+    }
+
+    public Piece GetNewPiece()
+    {
+        if (bag.Count == 0)
+            FillBag();
+        Piece piece = bag[0];
+        bag.RemoveAt(0);
+        return piece;
     }
 }
+
+

@@ -51,6 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blockColor: {r: 0.6603774, g: 0, b: 0.51621836, a: 0}
   type: 116
+  isActive: 1
 --- !u!54 &-9146690226893556638
 Rigidbody:
   m_ObjectHideFlags: 0

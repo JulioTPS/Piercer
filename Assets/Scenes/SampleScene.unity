@@ -912,6 +912,7 @@ GameObject:
   - component: {fileID: 2023623915}
   - component: {fileID: 2023623917}
   - component: {fileID: 2023623918}
+  - component: {fileID: 2023623919}
   m_Layer: 0
   m_Name: Game Systems
   m_TagString: Untagged
@@ -976,6 +977,24 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f555904bd5c8fd45b1994ee5883c84e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  movementStrength: 50
+  linearDamping: 8
+  linearDampingDefault: 0
+  torqueStrength: 12
+  angularDamping: 2
+  angularDampingDefault: 0.1
+--- !u!114 &2023623919
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023623914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 863f478e43c73804ebd92131571200b3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   pieces:
   - {fileID: -516702560494015600, guid: 9cd5224ac77770946acfd50e34d64f1c, type: 3}
   - {fileID: 8388791899825684126, guid: dd9157edd01e39b45af0002ad91d1654, type: 3}
@@ -984,12 +1003,7 @@ MonoBehaviour:
   - {fileID: 253002360959508750, guid: 4d839db3168f9ed49af1664b46f8d7c6, type: 3}
   - {fileID: 8744295864279393935, guid: 688a54fe910b16549979f378d0af4221, type: 3}
   - {fileID: -8733531081623579042, guid: 059141cc43becb84f952f7b48e7cb315, type: 3}
-  movementStrength: 50
-  linearDamping: 8
-  linearDampingDefault: 0
-  torqueStrength: 12
-  angularDamping: 2
-  angularDampingDefault: 0.1
+  keepPosition: {x: -10, y: 15, z: 0}
   spawnPosition: {x: 0, y: 21, z: 0}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
