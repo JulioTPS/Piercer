@@ -5,6 +5,8 @@ using System.Collections;
 public class PieceManager : MonoBehaviour
 {
     public List<Piece> pieces;
+    public Vector3 previewPiecesPosition = new(9, 18, 0);
+    private List<Piece> previewPieces = new();
     public static PieceManager Instance;
     public Vector3 keepPosition = new(-10, 15, 0);
     public Vector3 spawnPosition = new(0, 21, 0);
@@ -12,8 +14,10 @@ public class PieceManager : MonoBehaviour
     private Piece activePiece;
     private PieceBag pieceBag;
     private bool swapPieces = false;
+    [SerializeField] private readonly int PreviewPiecesSpacing = 3;
+    [SerializeField] private readonly int maxPreviewPieces = 3;
 
-    public float placingPieceSnappingMargin = 25f;
+    [SerializeField] public readonly float placingPieceSnappingMargin = 25f;
 
 
     void Awake()
@@ -22,7 +26,6 @@ public class PieceManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
-            pieceBag = new PieceBag(pieces);
         }
         else
         {
@@ -32,25 +35,26 @@ public class PieceManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (swapPieces)
+        if (!swapPieces)
+            return;
+        PieceController.Instance.SwitchControllerLock(true);
+        if (keptPiece != null)
         {
-            if (keptPiece != null)
-            {
-                Rigidbody keptPieceRb = keptPiece.GetComponent<Rigidbody>();
-                keptPieceRb.position = keepPosition;
-                keptPieceRb.transform.rotation = Quaternion.identity;
-                keptPieceRb.isKinematic = true;
-                keptPieceRb.useGravity = false;
-            }
-            if (activePiece != null)
-            {
-                Rigidbody activePieceRB = activePiece.GetComponent<Rigidbody>();
-                activePieceRB.position = spawnPosition;
-                activePieceRB.isKinematic = false;
-                activePieceRB.useGravity = true;
-            }
-            swapPieces = false;
+            Debug.Log("Keeping piece: " + keptPiece.name);
+            Rigidbody keptPieceRb = keptPiece.GetComponent<Rigidbody>();
+            keptPieceRb.position = keepPosition;
+            keptPieceRb.transform.rotation = Quaternion.identity;
+            keptPieceRb.isKinematic = true;
+            keptPieceRb.useGravity = false;
         }
+        if (activePiece != null)
+        {
+            Rigidbody activePieceRB = activePiece.GetComponent<Rigidbody>();
+            activePieceRB.position = spawnPosition;
+            activePieceRB.useGravity = false;
+        }
+        swapPieces = false;
+        PieceController.Instance.SwitchControllerLock(false);
     }
 
     public Piece KeepPiece()
@@ -58,23 +62,13 @@ public class PieceManager : MonoBehaviour
         if (keptPiece == null)
         {
             keptPiece = activePiece;
-            SpawnNewPiece();
+            SpawnNextPiece();
         }
         else
         {
             (activePiece, keptPiece) = (keptPiece, activePiece);
         }
         swapPieces = true;
-        return activePiece;
-    }
-
-    public Piece SpawnNewPiece()
-    {
-        activePiece = Instantiate(
-            pieceBag.GetNewPiece(),
-            spawnPosition,
-            Quaternion.identity
-        );
         return activePiece;
     }
 
@@ -122,9 +116,51 @@ public class PieceManager : MonoBehaviour
         }
         GridManager.Instance.CheckAndClearLines(minY, maxY);
         Destroy(activePiece.transform.root.gameObject);
-        return SpawnNewPiece();
+        activePiece = SpawnNextPiece();
+        return activePiece;
     }
 
+    public Piece SpawnNewPiece(Vector3 spawnLocation)
+    {
+        Piece piece = Instantiate(
+            pieceBag.GetNewPiece(),
+            spawnLocation,
+            Quaternion.identity
+        );
+        return piece;
+    }
+
+    public Piece SpawnNextPiece()
+    {
+        activePiece = previewPieces[0];
+        Rigidbody activePieceeRb = activePiece.GetComponent<Rigidbody>();
+        activePieceeRb.position = spawnPosition;
+        for (int i = 0; i < maxPreviewPieces - 1; i++)
+        {
+            Piece movingPiece = previewPieces[i + 1];
+            Rigidbody movingPieceRb = movingPiece.GetComponent<Rigidbody>();
+            movingPieceRb.position += new Vector3(0, PreviewPiecesSpacing, 0);
+            previewPieces[i] = previewPieces[i + 1];
+        }
+        Vector3 newPreviewPosition = previewPiecesPosition + new Vector3(0, -(maxPreviewPieces - 1) * PreviewPiecesSpacing, 0);
+        Piece newPreviewPiece = SpawnNewPiece(newPreviewPosition);
+        previewPieces[maxPreviewPieces - 1] = newPreviewPiece;
+        return activePiece;
+    }
+
+    public Piece Initialize()
+    {
+        pieceBag ??= new PieceBag(pieces);
+
+        activePiece = SpawnNewPiece(spawnPosition);
+        for (int i = 0; i < maxPreviewPieces; i++)
+        {
+            Vector3 newPreviewPosition = previewPiecesPosition + new Vector3(0, -i * PreviewPiecesSpacing, 0);
+            Piece newPreviewPiece = SpawnNewPiece(newPreviewPosition);
+            previewPieces.Add(newPreviewPiece);
+        }
+        return activePiece;
+    }
 }
 
 public class PieceBag

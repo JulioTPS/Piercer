@@ -53,7 +53,7 @@ public class GridManager : MonoBehaviour
 
         if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight || grid[x, y].isOccupied == true)
         {
-            Debug.LogError($"Invalid position ({x}, {y}) for block: {blockTransform.name}. Out of bounds or already occupied.");
+            Debug.LogWarning($"Invalid position ({x}, {y}) for block: {blockTransform.name}. Out of bounds or already occupied.");
             return -1;
         }
 

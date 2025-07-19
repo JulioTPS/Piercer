@@ -37,6 +37,7 @@ public class PieceController : MonoBehaviour
 
 
     private bool isPlacingPiece = false;
+    private bool publicControllerLock = false;
     private bool isDragging = false;
 
     private Camera mainCamera;
@@ -61,17 +62,12 @@ public class PieceController : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main;
-        SetActivePiece(PieceManager.Instance.SpawnNewPiece());
+        SetActivePiece(PieceManager.Instance.Initialize());
     }
 
     void Update()
     {
-        // if (Input.GetKeyDown(KeyCode.Space))
-        // {
-        //     SetActivePiece(PieceManager.Instance.SpawnNewPiece());
-        // }
-
-        if (isPlacingPiece || activePieceTransform == null)
+        if (isPlacingPiece || activePieceTransform == null || publicControllerLock)
             return;
 
         HandleMouseInput();
@@ -97,8 +93,8 @@ public class PieceController : MonoBehaviour
             isDragging = false;
             rotationState.Reset();
             SetActivePiece(PieceManager.Instance.PlacePiece());
-            isPlacingPiece = false;
         }
+
         if (Input.GetKeyDown(KeyCode.W))
         {
             isPlacingPiece = true;
@@ -111,7 +107,7 @@ public class PieceController : MonoBehaviour
     }
     void FixedUpdate()
     {
-        if (isPlacingPiece)
+        if (isPlacingPiece || publicControllerLock)
             return;
 
         if (rotationState.isRotating)
@@ -181,10 +177,16 @@ public class PieceController : MonoBehaviour
         activePieceRb = newPiece.GetComponent<Rigidbody>();
         activePieceRb.linearDamping = linearDampingDefault;
         activePieceRb.angularDamping = angularDampingDefault;
+        activePieceRb.isKinematic = false;
         isDragging = false;
         rotationState.Reset();
         isPlacingPiece = false;
         Debug.Assert(activePieceTransform != null, "Active piece does not have a Transform component.");
         Debug.Assert(activePieceRb != null, "Active piece does not have a Rigidbody component.");
+    }
+
+    public void SwitchControllerLock(bool lockState)
+    {
+        publicControllerLock = lockState;
     }
 }
