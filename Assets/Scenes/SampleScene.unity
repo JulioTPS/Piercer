@@ -260,7 +260,7 @@ Camera:
   far clip plane: 1000
   field of view: 38
   orthographic: 1
-  orthographic size: 11
+  orthographic size: 12
   m_Depth: -1
   m_CullingMask:
     serializedVersion: 2
@@ -988,8 +988,8 @@ MonoBehaviour:
   movementStrength: 50
   linearDamping: 8
   linearDampingDefault: 0
-  torqueStrength: 12
-  angularDamping: 2
+  torqueStrength: 10
+  angularDamping: 5
   angularDampingDefault: 0.1
 --- !u!114 &2023623919
 MonoBehaviour:
