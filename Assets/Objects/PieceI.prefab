@@ -51,6 +51,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   blockColor: {r: 0, g: 1, b: 0.980212, a: 0}
   type: 105
+  isActive: 1
 --- !u!54 &-8358422332471979877
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -73,8 +74,8 @@ Rigidbody:
     m_Bits: 0
   m_ImplicitCom: 1
   m_ImplicitTensor: 1
-  m_UseGravity: 1
-  m_IsKinematic: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
   m_Interpolate: 1
   m_Constraints: 56
   m_CollisionDetection: 2
