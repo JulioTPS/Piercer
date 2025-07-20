@@ -2,25 +2,30 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 
+public struct RotationState
+{
+    public bool isRotating;
+    public bool isPressingQ;
+
+    public float torqueStrength;
+
+    public RotationState(bool isRotating = false, bool isPressingQ = false, float torqueStrength = 16f)
+    {
+        this.isRotating = isRotating;
+        this.isPressingQ = isPressingQ;
+        this.torqueStrength = torqueStrength;
+    }
+
+    public void Reset()
+    {
+        isRotating = false;
+        isPressingQ = false;
+        torqueStrength = 16f;
+    }
+}
+
 public class PieceController : MonoBehaviour
 {
-    private struct RotationState
-    {
-        public bool isRotating;
-        public bool isPressingQ;
-
-        public RotationState(bool isRotating = false, bool isPressingQ = false)
-        {
-            this.isRotating = isRotating;
-            this.isPressingQ = isPressingQ;
-        }
-
-        public void Reset()
-        {
-            isRotating = false;
-            isPressingQ = false;
-        }
-    }
 
     public static PieceController Instance;
     private RotationState rotationState = new();
@@ -31,7 +36,7 @@ public class PieceController : MonoBehaviour
     public float linearDampingDefault = 0f;
 
     [Header("Rotation Settings")]
-    public float torqueStrength = 12f;
+    public float torqueStrength = 16f;
     public float angularDamping = 2f;
     public float angularDampingDefault = 0.1f;
 
@@ -41,17 +46,16 @@ public class PieceController : MonoBehaviour
     private bool isDragging = false;
 
     private Camera mainCamera;
-    private Vector3 mouseOffset;
     private Vector3 movementDirection = Vector3.zero;
     private Rigidbody activePieceRb;
     private Transform activePieceTransform;
-
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            rotationState.torqueStrength = torqueStrength;
         }
         else
         {
@@ -78,11 +82,13 @@ public class PieceController : MonoBehaviour
             rotationState.isRotating = true;
             rotationState.isPressingQ = isPressingQ;
             activePieceRb.angularDamping = angularDamping;
+            PieceManager.Instance.SetRotationState(rotationState);
         }
         else if (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.E))
         {
             rotationState.isRotating = false;
             rotationState.isPressingQ = false;
+            PieceManager.Instance.SetRotationState(rotationState);
             if (!isDragging)
                 activePieceRb.angularDamping = angularDampingDefault;
         }
@@ -98,27 +104,11 @@ public class PieceController : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.W))
         {
             isPlacingPiece = true;
-            isDragging = false;
+            OnPieceMouseUp();
             rotationState.Reset();
             activePieceRb.isKinematic = true;
             activePieceRb.useGravity = false;
             SetActivePiece(PieceManager.Instance.KeepPiece());
-        }
-    }
-    void FixedUpdate()
-    {
-        if (isPlacingPiece || publicControllerLock)
-            return;
-
-        if (rotationState.isRotating)
-        {
-            Vector3 torque = new(0f, 0f, (rotationState.isPressingQ ? 1f : -1f) * torqueStrength);
-            activePieceRb.AddTorque(torque, ForceMode.Force);
-        }
-
-        if (isDragging)
-        {
-            activePieceRb.AddForce(movementDirection, ForceMode.Force);
         }
     }
 
@@ -132,7 +122,7 @@ public class PieceController : MonoBehaviour
                 Piece hitPiece = hit.transform.GetComponentInParent<Piece>();
                 if (hitPiece != null && hitPiece.transform == activePieceTransform)
                 {
-                    OnPieceMouseDown();
+                    OnPieceMouseDown(hit.point);
                 }
             }
         }
@@ -146,29 +136,38 @@ public class PieceController : MonoBehaviour
         }
     }
 
-    private void OnPieceMouseDown()
+    private void OnPieceMouseDown(Vector3 worldHitPoint)
     {
         isDragging = true;
+
+        Vector3 localHitPoint = activePieceTransform.InverseTransformPoint(worldHitPoint);
+        localHitPoint.z = 0f;
+        activePieceRb.centerOfMass = localHitPoint;
+
         activePieceRb.useGravity = false;
         activePieceRb.angularDamping = angularDamping;
         activePieceRb.linearDamping = linearDamping;
-        mouseOffset = Input.mousePosition - mainCamera.WorldToScreenPoint(activePieceTransform.position);
     }
 
     private void OnPieceMouseHold()
     {
-        Vector3 targetWorldPos = mainCamera.ScreenToWorldPoint(Input.mousePosition - mouseOffset);
-        Vector3 direction = targetWorldPos - activePieceTransform.position;
+        Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, mainCamera.WorldToScreenPoint(activePieceTransform.position).z));
+
+        Vector3 centerOfMassWorld = activePieceTransform.TransformPoint(activePieceRb.centerOfMass);
+        Vector3 direction = mouseWorldPos - centerOfMassWorld;
         direction.z = 0f;
         movementDirection = direction * movementStrength;
+        PieceManager.Instance.SetMovement(movementDirection);
     }
 
     private void OnPieceMouseUp()
     {
         isDragging = false;
+        activePieceRb.ResetCenterOfMass();
         activePieceRb.useGravity = true;
         activePieceRb.linearDamping = linearDampingDefault;
         activePieceRb.angularDamping = angularDampingDefault;
+        PieceManager.Instance.SetMovement(Vector3.zero);
     }
 
     private void SetActivePiece(Piece newPiece)
@@ -177,7 +176,7 @@ public class PieceController : MonoBehaviour
         activePieceRb = newPiece.GetComponent<Rigidbody>();
         activePieceRb.linearDamping = linearDampingDefault;
         activePieceRb.angularDamping = angularDampingDefault;
-        activePieceRb.isKinematic = false;
+        StartCoroutine(EnablePhysicsNextFrame());
         isDragging = false;
         rotationState.Reset();
         isPlacingPiece = false;
@@ -185,8 +184,39 @@ public class PieceController : MonoBehaviour
         Debug.Assert(activePieceRb != null, "Active piece does not have a Rigidbody component.");
     }
 
+    private IEnumerator EnablePhysicsNextFrame()
+    {
+        yield return new WaitForFixedUpdate();
+        if (activePieceRb != null)
+        {
+            activePieceRb.isKinematic = false;
+        }
+    }
+
     public void SwitchControllerLock(bool lockState)
     {
         publicControllerLock = lockState;
     }
+
+    // void OnDrawGizmos()
+    // {
+    //     if (activePieceRb != null)
+    //     {
+    //         // Draw center of mass as a red sphere
+    //         Gizmos.color = Color.red;
+    //         Vector3 worldCenterOfMass = activePieceTransform.TransformPoint(activePieceRb.centerOfMass);
+    //         Gizmos.DrawSphere(worldCenterOfMass, 0.1f);
+    //     }
+    // }
+
+    // void OnDrawGizmosSelected()
+    // {
+    //     // Only show when piece is selected in editor
+    //     if (activePieceRb != null)
+    //     {
+    //         Gizmos.color = Color.green;
+    //         Vector3 worldCenterOfMass = activePieceTransform.TransformPoint(activePieceRb.centerOfMass);
+    //         Gizmos.DrawWireSphere(worldCenterOfMass, 0.15f);
+    //     }
+    // }
 }
