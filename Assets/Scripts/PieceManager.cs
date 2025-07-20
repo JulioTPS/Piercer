@@ -224,7 +224,7 @@ public class PieceBag
 
         previousPiece = bag[0];
     }
-    // Test commit
+
     public Piece GetNewPiece()
     {
         if (bag.Count == 0)
