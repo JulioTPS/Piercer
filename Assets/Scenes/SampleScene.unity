@@ -988,7 +988,7 @@ MonoBehaviour:
   movementStrength: 50
   linearDamping: 8
   linearDampingDefault: 0
-  torqueStrength: 10
+  torqueStrength: 16
   angularDamping: 5
   angularDampingDefault: 0.1
 --- !u!114 &2023623919

@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Collections;
+using NUnit.Framework.Internal;
 
 public class PieceManager : MonoBehaviour
 {
@@ -14,6 +14,9 @@ public class PieceManager : MonoBehaviour
     private Piece activePiece;
     private PieceBag pieceBag;
     private bool swapPieces = false;
+    private bool isPlacingPiece = false;
+    public RotationState rotationState;
+    private Vector3 movementDirection;
     [SerializeField] private readonly int PreviewPiecesSpacing = 3;
     [SerializeField] private readonly int maxPreviewPieces = 3;
 
@@ -35,26 +38,41 @@ public class PieceManager : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (!swapPieces)
+        if (isPlacingPiece)
             return;
-        PieceController.Instance.SwitchControllerLock(true);
+
+        if (!swapPieces)
+        {
+            if (rotationState.isRotating)
+            {
+                Vector3 torque = new(0f, 0f, (rotationState.isPressingQ ? 1f : -1f) * rotationState.torqueStrength);
+                activePiece.GetComponent<Rigidbody>().AddTorque(torque, ForceMode.Force);
+            }
+
+            if (movementDirection.magnitude > 0)
+            {
+                activePiece.GetComponent<Rigidbody>().AddForce(movementDirection, ForceMode.Force);
+            }
+            return;
+        }
+        movementDirection = Vector3.zero;
+        rotationState.Reset();
         if (keptPiece != null)
         {
-            Debug.Log("Keeping piece: " + keptPiece.name);
             Rigidbody keptPieceRb = keptPiece.GetComponent<Rigidbody>();
-            keptPieceRb.position = keepPosition;
-            keptPieceRb.transform.rotation = Quaternion.identity;
             keptPieceRb.isKinematic = true;
             keptPieceRb.useGravity = false;
+            keptPieceRb.transform.SetPositionAndRotation(keepPosition, Quaternion.identity);
         }
         if (activePiece != null)
         {
             Rigidbody activePieceRB = activePiece.GetComponent<Rigidbody>();
-            activePieceRB.position = spawnPosition;
+
+            activePieceRB.isKinematic = true;
             activePieceRB.useGravity = false;
+            activePieceRB.transform.SetPositionAndRotation(spawnPosition, Quaternion.identity);
         }
         swapPieces = false;
-        PieceController.Instance.SwitchControllerLock(false);
     }
 
     public Piece KeepPiece()
@@ -76,7 +94,12 @@ public class PieceManager : MonoBehaviour
     {
         float eulerZ = activePiece.transform.eulerAngles.z;
         float snappedZ = Mathf.Round(eulerZ / 90f) * 90f;
-        return Mathf.Abs(Mathf.DeltaAngle(eulerZ, snappedZ)) <= placingPieceSnappingMargin;
+        bool isSnapped = Mathf.Abs(Mathf.DeltaAngle(eulerZ, snappedZ)) <= placingPieceSnappingMargin;
+        if (isSnapped)
+        {
+            isPlacingPiece = true;
+        }
+        return isSnapped;
     }
     public Piece PlacePiece()
     {
@@ -117,6 +140,7 @@ public class PieceManager : MonoBehaviour
         GridManager.Instance.CheckAndClearLines(minY, maxY);
         Destroy(activePiece.transform.root.gameObject);
         activePiece = SpawnNextPiece();
+        isPlacingPiece = false;
         return activePiece;
     }
 
@@ -160,6 +184,16 @@ public class PieceManager : MonoBehaviour
             previewPieces.Add(newPreviewPiece);
         }
         return activePiece;
+    }
+
+    public void SetRotationState(RotationState rotationState)
+    {
+        this.rotationState = rotationState;
+    }
+
+    public void SetMovement(Vector3 movementDirection)
+    {
+        this.movementDirection = movementDirection;
     }
 }
 
