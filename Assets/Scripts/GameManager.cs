@@ -5,8 +5,12 @@ using UnityEngine;
 public class GameManager : MonoBehaviour
 {
     public int score = 0;
+
+    [Header("Day/Night Cycle")]
     public GameObject sunObject;
     public float dayTimeSpeed = 1f;
+    public bool dayNightCycle = true;
+    public float lightSkipTime = 3f;
     private float currentDayAngle = 0f;
     private float timer = 0f;
     private const float DAY_TEMPERATURE = 5700f;
@@ -18,6 +22,7 @@ public class GameManager : MonoBehaviour
     private const float DAY_END_ANGLE = 90f;
     private const float DAY_START_ANGLE = -90f;
     private bool isNight = false;
+
     public static GameManager Instance;
     public TextMeshPro scoreTMPro;
 
@@ -42,32 +47,37 @@ public class GameManager : MonoBehaviour
     void Update()
     {
         timer += Time.deltaTime;
-        currentDayAngle = dayTimeSpeed * timer;
-
-        if (currentDayAngle > DAY_END_ANGLE)
+        if (dayNightCycle && timer > lightSkipTime)
         {
-            Debug.Log("flipped");
-            isNight = !isNight;
-            currentDayAngle = DAY_START_ANGLE + currentDayAngle % DAY_END_ANGLE;
-            timer = currentDayAngle / dayTimeSpeed;
-        }
-        if (isNight)
-        {
-            RenderSettings.sun.colorTemperature = NIGHT_TEMPERATURE;
-            // RenderSettings.sun.intensity = NIGHT_INTENSITY;
-            // RenderSettings.sun.colorTemperature = Mathf.Lerp(NIGHT_TEMPERATURE, FLIP_TEMPERATURE, Mathf.Abs(currentDayAngle) / DAY_END_ANGLE);
-            RenderSettings.sun.intensity = Mathf.Lerp(NIGHT_INTENSITY, FLIP_INTENSITY, Mathf.Abs(currentDayAngle) / DAY_END_ANGLE);
-        }
-        else
-        {
-            RenderSettings.sun.colorTemperature = DAY_TEMPERATURE;
-            // RenderSettings.sun.intensity = DAY_INTENSITY;
-            // RenderSettings.sun.colorTemperature = Mathf.Lerp(DAY_TEMPERATURE, FLIP_TEMPERATURE, Mathf.Abs(currentDayAngle) / DAY_END_ANGLE);
-            RenderSettings.sun.intensity = Mathf.Lerp(DAY_INTENSITY, FLIP_INTENSITY, Mathf.Abs(currentDayAngle) / DAY_END_ANGLE);
-        }
-        sunObject.transform.localRotation = Quaternion.Euler(0, currentDayAngle, 0);
+            currentDayAngle = dayTimeSpeed * timer;
 
+            if (currentDayAngle > DAY_END_ANGLE)
+            {
+                isNight = !isNight;
+                currentDayAngle = DAY_START_ANGLE + currentDayAngle % DAY_END_ANGLE;
+                timer = currentDayAngle / dayTimeSpeed;
+                if (isNight)
+                {
+                    RenderSettings.sun.colorTemperature = NIGHT_TEMPERATURE;
+                    RenderSettings.sun.intensity = NIGHT_INTENSITY;
+                    // RenderSettings.sun.colorTemperature = Mathf.Lerp(NIGHT_TEMPERATURE, FLIP_TEMPERATURE, Mathf.Abs(currentDayAngle) / DAY_END_ANGLE);
+                    // RenderSettings.sun.intensity = Mathf.Lerp(NIGHT_INTENSITY, FLIP_INTENSITY, Mathf.Abs(currentDayAngle) / DAY_END_ANGLE);
+                }
+                else
+                {
+                    RenderSettings.sun.colorTemperature = DAY_TEMPERATURE;
+                    RenderSettings.sun.intensity = DAY_INTENSITY;
+                    // RenderSettings.sun.colorTemperature = Mathf.Lerp(DAY_TEMPERATURE, FLIP_TEMPERATURE, Mathf.Abs(currentDayAngle) / DAY_END_ANGLE);
+                    // RenderSettings.sun.intensity = Mathf.Lerp(DAY_INTENSITY, FLIP_INTENSITY, Mathf.Abs(currentDayAngle) / DAY_END_ANGLE);
+                }
+            }
+            sunObject.transform.localRotation = Quaternion.Euler(0, currentDayAngle, 0);
+        }
 
+        if (timer > float.MaxValue - 10f)
+        {
+            timer = 0f;
+        }
         if (Input.GetKeyDown(KeyCode.P))
         {
             AddScore(1);
