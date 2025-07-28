@@ -123,7 +123,7 @@ public class PieceManager : MonoBehaviour
         while (activePieceTransform.childCount > 0)
         {
             Transform blockTransform = activePieceTransform.GetChild(0);
-            int gridY = GridManager.Instance.SetCell(blockTransform, activePiece.type);
+            int gridY = GridManager.Instance.SetCell(blockTransform);
             if (gridY < 0)
             {
                 blockTransform.SetParent(null);

@@ -49,9 +49,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 81a912de095d34d4a95493f8f224fd13, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  blockColor: {r: 0.104001164, g: 1, b: 0, a: 0}
-  type: 115
-  isActive: 1
 --- !u!54 &9055941598148040016
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -87,6 +84,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 920618871697633745}
     m_Modifications:
+    - target: {fileID: 6184511648295316823, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
+      propertyPath: colorName
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6184511648295316823, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
+      propertyPath: paletteEnum
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6308257640602784032, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.5
@@ -149,6 +154,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 920618871697633745}
     m_Modifications:
+    - target: {fileID: 6184511648295316823, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
+      propertyPath: colorName
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6184511648295316823, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
+      propertyPath: paletteEnum
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6308257640602784032, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.5
@@ -211,6 +224,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 920618871697633745}
     m_Modifications:
+    - target: {fileID: 6184511648295316823, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
+      propertyPath: colorName
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6184511648295316823, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
+      propertyPath: paletteEnum
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6308257640602784032, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
       propertyPath: m_LocalPosition.x
       value: -0.5
@@ -276,6 +297,14 @@ PrefabInstance:
     - target: {fileID: 4838630093626912751, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6184511648295316823, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
+      propertyPath: colorName
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6184511648295316823, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
+      propertyPath: paletteEnum
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6308257640602784032, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
       propertyPath: m_LocalPosition.x

@@ -8,7 +8,6 @@ public class GridManager : MonoBehaviour
     private struct GridCell
     {
         public bool isOccupied;
-        public char type; //may be useful later
         public Transform blockTransform;
     }
 
@@ -46,7 +45,7 @@ public class GridManager : MonoBehaviour
         grid = new GridCell[gridWidth, gridHeight];
     }
 
-    public int SetCell(Transform blockTransform, char type)
+    public int SetCell(Transform blockTransform)
     {
         int x = Mathf.FloorToInt(blockTransform.position.x - origin.x + 0.001f);
         int y = Mathf.FloorToInt(blockTransform.position.y - origin.y + 0.001f);
@@ -58,7 +57,6 @@ public class GridManager : MonoBehaviour
         }
 
         grid[x, y].isOccupied = true;
-        grid[x, y].type = type;
         grid[x, y].blockTransform = blockTransform;
 
         return y;
@@ -103,7 +101,6 @@ public class GridManager : MonoBehaviour
                 {
                     Destroy(grid[x, y].blockTransform.gameObject);
                     grid[x, y].blockTransform = null;
-                    grid[x, y].type = '\0';
                     grid[x, y].isOccupied = false;
                 }
             }
@@ -119,11 +116,9 @@ public class GridManager : MonoBehaviour
                 {
                     grid[x, y].blockTransform = grid[x, y + moveAmount].blockTransform;
                     blocksToMove.Add((grid[x, y].blockTransform, grid[x, y].blockTransform.position));
-                    grid[x, y].type = grid[x, y + moveAmount].type;
                     grid[x, y].isOccupied = true;
 
                     grid[x, y + moveAmount].blockTransform = null;
-                    grid[x, y + moveAmount].type = '\0';
                     grid[x, y + moveAmount].isOccupied = false;
                 }
             }
