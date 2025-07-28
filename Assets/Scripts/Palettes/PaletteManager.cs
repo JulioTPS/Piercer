@@ -1,29 +1,50 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+#if UNITY_EDITOR
+[ExecuteInEditMode]
+#endif
 public class PaletteManager : MonoBehaviour
 {
     [SerializeField] public Palette palette;
     public static PaletteManager Instance;
 
-    private Dictionary<string, Color> colorsDictionary;
+    public static System.Action OnInstanceReady;
+
+    private Dictionary<PaletteEnum, Color> colorsDictionary;
 
     private void Awake()
     {
-        if (Instance == null)
+        if (Application.isPlaying)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-
-            colorsDictionary = palette.GetColorsDictionary();
+            if (Instance == null)
+            {
+                Instance = this;
+                DontDestroyOnLoad(gameObject);
+                InitializeColors();
+                OnInstanceReady?.Invoke();
+            }
+            else
+            {
+                Destroy(gameObject);
+            }
         }
         else
         {
-            Destroy(gameObject);
+            Instance = this;
+            InitializeColors();
         }
     }
 
-    public Color GetColor(string colorName)
+    private void InitializeColors()
+    {
+        if (palette != null)
+        {
+            colorsDictionary = palette.GetColorsDictionary();
+        }
+    }
+
+    public Color GetColor(PaletteEnum colorName)
     {
         if (colorsDictionary.TryGetValue(colorName, out var color))
         {

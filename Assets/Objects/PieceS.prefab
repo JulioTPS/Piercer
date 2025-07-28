@@ -85,6 +85,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 920618871697633745}
     m_Modifications:
     - target: {fileID: 6184511648295316823, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
+      propertyPath: colorName
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6184511648295316823, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
       propertyPath: paletteEnum
       value: 5
       objectReference: {fileID: 0}
@@ -151,6 +155,10 @@ PrefabInstance:
     m_TransformParent: {fileID: 920618871697633745}
     m_Modifications:
     - target: {fileID: 6184511648295316823, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
+      propertyPath: colorName
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 6184511648295316823, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
       propertyPath: paletteEnum
       value: 5
       objectReference: {fileID: 0}
@@ -216,6 +224,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 920618871697633745}
     m_Modifications:
+    - target: {fileID: 6184511648295316823, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
+      propertyPath: colorName
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 6184511648295316823, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
       propertyPath: paletteEnum
       value: 5
@@ -285,6 +297,10 @@ PrefabInstance:
     - target: {fileID: 4838630093626912751, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6184511648295316823, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
+      propertyPath: colorName
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6184511648295316823, guid: 4191878ec9cab5d4a8e71136922596f5, type: 3}
       propertyPath: paletteEnum

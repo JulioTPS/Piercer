@@ -979,7 +979,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 00ac5d56db4d31148b89a544bb85ae75, type: 2}
     - target: {fileID: 919132149155446097, guid: 3bb3ef92234da5245bca76be4a090f39, type: 3}
       propertyPath: m_Name
-      value: Bg_Down
+      value: Bg above
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1003,10 +1003,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1148268827}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90ea5fa2538497c4ebda87c6a64468f3, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ff872daf312e3946a5c9eba41a05a7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paletteEnum: 11
+  colorName: 10
 --- !u!1 &1161497519
 GameObject:
   m_ObjectHideFlags: 0
@@ -1052,7 +1052,7 @@ GameObject:
   - component: {fileID: 1421567487}
   - component: {fileID: 1421567491}
   m_Layer: 0
-  m_Name: Bg
+  m_Name: Bg middle
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1157,10 +1157,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1421567486}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90ea5fa2538497c4ebda87c6a64468f3, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ff872daf312e3946a5c9eba41a05a7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paletteEnum: 9
+  colorName: 9
 --- !u!1001 &1640159036
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1227,7 +1227,7 @@ PrefabInstance:
       objectReference: {fileID: 2100000, guid: 00ac5d56db4d31148b89a544bb85ae75, type: 2}
     - target: {fileID: 919132149155446097, guid: 3bb3ef92234da5245bca76be4a090f39, type: 3}
       propertyPath: m_Name
-      value: Bg_Up
+      value: Bg below
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 3bb3ef92234da5245bca76be4a090f39, type: 3}
       propertyPath: m_IsActive
@@ -1255,10 +1255,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 1640159037}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 90ea5fa2538497c4ebda87c6a64468f3, type: 3}
+  m_Script: {fileID: 11500000, guid: 3ff872daf312e3946a5c9eba41a05a7a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  paletteEnum: 10
+  colorName: 11
 --- !u!1 &2023623914
 GameObject:
   m_ObjectHideFlags: 0
@@ -1272,6 +1272,7 @@ GameObject:
   - component: {fileID: 2023623917}
   - component: {fileID: 2023623918}
   - component: {fileID: 2023623919}
+  - component: {fileID: 2023623920}
   m_Layer: 0
   m_Name: Game Systems
   m_TagString: Untagged
@@ -1369,6 +1370,19 @@ MonoBehaviour:
   previewPiecesPosition: {x: 9, y: 18, z: 0}
   keepPosition: {x: -10, y: 15, z: 0}
   spawnPosition: {x: 0, y: 21, z: 0}
+--- !u!114 &2023623920
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023623914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7d702971367092d4c935cb6339dd9425, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  palette: {fileID: 11400000, guid: 17ef059ac1d413b4ea658fcecc38baa9, type: 2}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -1383,5 +1397,5 @@ SceneRoots:
   - {fileID: 1063870682}
   - {fileID: 898721970}
   - {fileID: 1421567490}
-  - {fileID: 1640159036}
   - {fileID: 1148268826}
+  - {fileID: 1640159036}
