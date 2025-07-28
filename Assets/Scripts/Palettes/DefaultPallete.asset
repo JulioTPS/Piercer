@@ -12,15 +12,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: aab9d3944de91c24b9d2b57d07faf311, type: 3}
   m_Name: DefaultPallete
   m_EditorClassIdentifier: 
-  Default: {r: 0, g: 0, b: 0, a: 0}
-  PieceI: {r: 0, g: 0, b: 0, a: 0}
-  PieceJ: {r: 0, g: 0, b: 0, a: 0}
-  PieceL: {r: 0, g: 0, b: 0, a: 0}
-  PieceO: {r: 0, g: 0, b: 0, a: 0}
-  PieceS: {r: 0, g: 0, b: 0, a: 0}
-  PieceT: {r: 0, g: 0, b: 0, a: 0}
-  PieceZ: {r: 0, g: 0, b: 0, a: 0}
-  Arena: {r: 0, g: 0, b: 0, a: 0}
-  Background: {r: 0, g: 0, b: 0, a: 0}
-  BackgroundUp: {r: 0, g: 0, b: 0, a: 0}
-  BackgroundDown: {r: 0, g: 0, b: 0, a: 0}
+  DefaultColor: {r: 1, g: 0, b: 0.9208169, a: 0}
+  PieceI: {r: 0, g: 0.9736042, b: 1, a: 0}
+  PieceJ: {r: 1, g: 0.53534526, b: 0, a: 0}
+  PieceL: {r: 0, g: 0.0543108, b: 1, a: 0}
+  PieceO: {r: 1, g: 0.94832873, b: 0, a: 0}
+  PieceS: {r: 0.065324545, g: 1, b: 0, a: 0}
+  PieceT: {r: 1, g: 0, b: 0.958446, a: 0}
+  PieceZ: {r: 1, g: 0, b: 0, a: 0}
+  Arena: {r: 0.6698113, g: 0.6698113, b: 0.6698113, a: 0}
+  BackgroundMiddle: {r: 0, g: 0.4056604, b: 0.016814826, a: 0}
+  BackgroundAbove: {r: 0, g: 0.7472286, b: 1, a: 0}
+  BackgroundBelow: {r: 0.009671379, g: 0.6320754, b: 0, a: 0}

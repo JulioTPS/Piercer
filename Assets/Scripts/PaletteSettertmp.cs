@@ -2,7 +2,7 @@ using UnityEngine;
 #if UNITY_EDITOR
 [ExecuteInEditMode]
 #endif
-public class ColorSetter : MonoBehaviour
+public class PaletteSettertmp : MonoBehaviour
 {
     private Renderer meshRenderer;
     private MaterialPropertyBlock materialPropertyBlock;
