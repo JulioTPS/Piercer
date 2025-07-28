@@ -43,13 +43,13 @@ public class GameManager : MonoBehaviour
 
     void Start()
     {
-        timer = currentDayAngle / dayTimeSpeed;
+        timer = currentDayAngle / dayTimeSpeed + lightSkipTime;
     }
 
     void Update()
     {
         timer += Time.deltaTime;
-        if (dayNightCycle && timer > lightSkipTime)
+        if (dayNightCycle && timer >= lightSkipTime)
         {
             currentDayAngle = dayTimeSpeed * timer;
 
