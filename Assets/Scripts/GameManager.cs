@@ -22,6 +22,7 @@ public class GameManager : MonoBehaviour
     private const float DAY_END_ANGLE = 90f;
     private const float DAY_START_ANGLE = -90f;
     private bool isNight = false;
+    private Light sunRenderSettings;
 
     public static GameManager Instance;
     public TextMeshPro scoreTMPro;
@@ -32,6 +33,7 @@ public class GameManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+            sunRenderSettings = RenderSettings.sun;
         }
         else
         {
@@ -58,17 +60,17 @@ public class GameManager : MonoBehaviour
                 timer = currentDayAngle / dayTimeSpeed;
                 if (isNight)
                 {
-                    RenderSettings.sun.colorTemperature = NIGHT_TEMPERATURE;
-                    RenderSettings.sun.intensity = NIGHT_INTENSITY;
-                    // RenderSettings.sun.colorTemperature = Mathf.Lerp(NIGHT_TEMPERATURE, FLIP_TEMPERATURE, Mathf.Abs(currentDayAngle) / DAY_END_ANGLE);
-                    // RenderSettings.sun.intensity = Mathf.Lerp(NIGHT_INTENSITY, FLIP_INTENSITY, Mathf.Abs(currentDayAngle) / DAY_END_ANGLE);
+                    sunRenderSettings.colorTemperature = NIGHT_TEMPERATURE;
+                    sunRenderSettings.intensity = NIGHT_INTENSITY;
+                    // sunRenderSettings.colorTemperature = Mathf.Lerp(NIGHT_TEMPERATURE, FLIP_TEMPERATURE, Mathf.Abs(currentDayAngle) / DAY_END_ANGLE);
+                    // sunRenderSettings.intensity = Mathf.Lerp(NIGHT_INTENSITY, FLIP_INTENSITY, Mathf.Abs(currentDayAngle) / DAY_END_ANGLE);
                 }
                 else
                 {
-                    RenderSettings.sun.colorTemperature = DAY_TEMPERATURE;
-                    RenderSettings.sun.intensity = DAY_INTENSITY;
-                    // RenderSettings.sun.colorTemperature = Mathf.Lerp(DAY_TEMPERATURE, FLIP_TEMPERATURE, Mathf.Abs(currentDayAngle) / DAY_END_ANGLE);
-                    // RenderSettings.sun.intensity = Mathf.Lerp(DAY_INTENSITY, FLIP_INTENSITY, Mathf.Abs(currentDayAngle) / DAY_END_ANGLE);
+                    sunRenderSettings.colorTemperature = DAY_TEMPERATURE;
+                    sunRenderSettings.intensity = DAY_INTENSITY;
+                    // sunRenderSettings.colorTemperature = Mathf.Lerp(DAY_TEMPERATURE, FLIP_TEMPERATURE, Mathf.Abs(currentDayAngle) / DAY_END_ANGLE);
+                    // sunRenderSettings.intensity = Mathf.Lerp(DAY_INTENSITY, FLIP_INTENSITY, Mathf.Abs(currentDayAngle) / DAY_END_ANGLE);
                 }
             }
             sunObject.transform.localRotation = Quaternion.Euler(0, currentDayAngle, 0);

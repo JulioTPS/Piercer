@@ -1,9 +1,12 @@
 using UnityEngine;
-
-public class Block : MonoBehaviour
+#if UNITY_EDITOR
+[ExecuteInEditMode]
+#endif
+public class ColorSetter : MonoBehaviour
 {
     private Renderer meshRenderer;
     private MaterialPropertyBlock materialPropertyBlock;
+    public PaletteEnum paletteEnum = PaletteEnum.Default;
 
     void Awake()
     {
@@ -12,10 +15,17 @@ public class Block : MonoBehaviour
         materialPropertyBlock ??= new MaterialPropertyBlock();
     }
 
-    public void SetColor(Color color)
+    void Start()
+    {
+        SetColor();
+    }
+
+    public void SetColor()
     {
         meshRenderer.GetPropertyBlock(materialPropertyBlock);
-        materialPropertyBlock.SetColor("_color", color);
+        materialPropertyBlock.SetFloat("_UV_index", (float)paletteEnum);
         meshRenderer.SetPropertyBlock(materialPropertyBlock);
     }
 }
+
+
