@@ -32,7 +32,6 @@ public class GameManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
             sunRenderSettings = RenderSettings.sun;
         }
         else

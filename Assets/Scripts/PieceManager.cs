@@ -1,6 +1,6 @@
-using UnityEngine;
 using System.Collections.Generic;
 using NUnit.Framework.Internal;
+using UnityEngine;
 
 public class PieceManager : MonoBehaviour
 {
@@ -17,18 +17,21 @@ public class PieceManager : MonoBehaviour
     private bool isPlacingPiece = false;
     public RotationState rotationState;
     private Vector3 movementDirection;
-    [SerializeField] private readonly int PreviewPiecesSpacing = 3;
-    [SerializeField] private readonly int maxPreviewPieces = 3;
 
-    [SerializeField] public readonly float placingPieceSnappingMargin = 25f;
+    [SerializeField]
+    private readonly int PreviewPiecesSpacing = 3;
 
+    [SerializeField]
+    private readonly int maxPreviewPieces = 3;
+
+    [SerializeField]
+    public readonly float placingPieceSnappingMargin = 25f;
 
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -45,7 +48,11 @@ public class PieceManager : MonoBehaviour
         {
             if (rotationState.isRotating)
             {
-                Vector3 torque = new(0f, 0f, (rotationState.isPressingQ ? 1f : -1f) * rotationState.torqueStrength);
+                Vector3 torque = new(
+                    0f,
+                    0f,
+                    (rotationState.isPressingQ ? 1f : -1f) * rotationState.torqueStrength
+                );
                 activePiece.GetComponent<Rigidbody>().AddTorque(torque, ForceMode.Force);
             }
 
@@ -94,13 +101,15 @@ public class PieceManager : MonoBehaviour
     {
         float eulerZ = activePiece.transform.eulerAngles.z;
         float snappedZ = Mathf.Round(eulerZ / 90f) * 90f;
-        bool isSnapped = Mathf.Abs(Mathf.DeltaAngle(eulerZ, snappedZ)) <= placingPieceSnappingMargin;
+        bool isSnapped =
+            Mathf.Abs(Mathf.DeltaAngle(eulerZ, snappedZ)) <= placingPieceSnappingMargin;
         if (isSnapped)
         {
             isPlacingPiece = true;
         }
         return isSnapped;
     }
+
     public Piece PlacePiece()
     {
         Transform activePieceTransform = activePiece.transform;
@@ -146,11 +155,7 @@ public class PieceManager : MonoBehaviour
 
     public Piece SpawnNewPiece(Vector3 spawnLocation)
     {
-        Piece piece = Instantiate(
-            pieceBag.GetNewPiece(),
-            spawnLocation,
-            Quaternion.identity
-        );
+        Piece piece = Instantiate(pieceBag.GetNewPiece(), spawnLocation, Quaternion.identity);
         return piece;
     }
 
@@ -166,7 +171,9 @@ public class PieceManager : MonoBehaviour
             movingPieceRb.position += new Vector3(0, PreviewPiecesSpacing, 0);
             previewPieces[i] = previewPieces[i + 1];
         }
-        Vector3 newPreviewPosition = previewPiecesPosition + new Vector3(0, -(maxPreviewPieces - 1) * PreviewPiecesSpacing, 0);
+        Vector3 newPreviewPosition =
+            previewPiecesPosition
+            + new Vector3(0, -(maxPreviewPieces - 1) * PreviewPiecesSpacing, 0);
         Piece newPreviewPiece = SpawnNewPiece(newPreviewPosition);
         previewPieces[maxPreviewPieces - 1] = newPreviewPiece;
         return activePiece;
@@ -179,7 +186,8 @@ public class PieceManager : MonoBehaviour
         activePiece = SpawnNewPiece(spawnPosition);
         for (int i = 0; i < maxPreviewPieces; i++)
         {
-            Vector3 newPreviewPosition = previewPiecesPosition + new Vector3(0, -i * PreviewPiecesSpacing, 0);
+            Vector3 newPreviewPosition =
+                previewPiecesPosition + new Vector3(0, -i * PreviewPiecesSpacing, 0);
             Piece newPreviewPiece = SpawnNewPiece(newPreviewPosition);
             previewPieces.Add(newPreviewPiece);
         }
@@ -234,5 +242,3 @@ public class PieceBag
         return piece;
     }
 }
-
-

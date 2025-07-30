@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-
 public class GridManager : MonoBehaviour
 {
     private struct GridCell
@@ -27,7 +26,6 @@ public class GridManager : MonoBehaviour
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -52,7 +50,9 @@ public class GridManager : MonoBehaviour
 
         if (x < 0 || x >= gridWidth || y < 0 || y >= gridHeight || grid[x, y].isOccupied == true)
         {
-            Debug.LogWarning($"Invalid position ({x}, {y}) for block: {blockTransform.name}. Out of bounds or already occupied.");
+            Debug.LogWarning(
+                $"Invalid position ({x}, {y}) for block: {blockTransform.name}. Out of bounds or already occupied."
+            );
             return -1;
         }
 
@@ -115,7 +115,9 @@ public class GridManager : MonoBehaviour
                 if (grid[x, y + moveAmount].blockTransform != null)
                 {
                     grid[x, y].blockTransform = grid[x, y + moveAmount].blockTransform;
-                    blocksToMove.Add((grid[x, y].blockTransform, grid[x, y].blockTransform.position));
+                    blocksToMove.Add(
+                        (grid[x, y].blockTransform, grid[x, y].blockTransform.position)
+                    );
                     grid[x, y].isOccupied = true;
 
                     grid[x, y + moveAmount].blockTransform = null;
@@ -127,7 +129,10 @@ public class GridManager : MonoBehaviour
         StartCoroutine(MoveBlocks(blocksToMove, moveAmount));
     }
 
-    private System.Collections.IEnumerator MoveBlocks(List<(Transform blockTransform, Vector3 startPosition)> blocksToMove, int moveAmount)
+    private System.Collections.IEnumerator MoveBlocks(
+        List<(Transform blockTransform, Vector3 startPosition)> blocksToMove,
+        int moveAmount
+    )
     {
         Vector3 moveVector = Vector3.down * moveAmount;
 
@@ -141,7 +146,11 @@ public class GridManager : MonoBehaviour
             {
                 if (blockTransform != null)
                 {
-                    blockTransform.position = Vector3.Lerp(startPosition, startPosition + moveVector, progress);
+                    blockTransform.position = Vector3.Lerp(
+                        startPosition,
+                        startPosition + moveVector,
+                        progress
+                    );
                 }
             }
 

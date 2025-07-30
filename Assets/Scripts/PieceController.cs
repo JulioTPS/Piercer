@@ -1,6 +1,6 @@
-using UnityEngine;
-using System.Collections.Generic;
 using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
 public struct RotationState
 {
@@ -9,7 +9,11 @@ public struct RotationState
 
     public float torqueStrength;
 
-    public RotationState(bool isRotating = false, bool isPressingQ = false, float torqueStrength = 16f)
+    public RotationState(
+        bool isRotating = false,
+        bool isPressingQ = false,
+        float torqueStrength = 16f
+    )
     {
         this.isRotating = isRotating;
         this.isPressingQ = isPressingQ;
@@ -26,7 +30,6 @@ public struct RotationState
 
 public class PieceController : MonoBehaviour
 {
-
     public static PieceController Instance;
     private RotationState rotationState = new();
 
@@ -40,7 +43,6 @@ public class PieceController : MonoBehaviour
     public float angularDamping = 2f;
     public float angularDampingDefault = 0.1f;
 
-
     private bool isPlacingPiece = false;
     private bool publicControllerLock = false;
     private bool isDragging = false;
@@ -49,12 +51,12 @@ public class PieceController : MonoBehaviour
     private Vector3 movementDirection = Vector3.zero;
     private Rigidbody activePieceRb;
     private Transform activePieceTransform;
+
     void Awake()
     {
         if (Instance == null)
         {
             Instance = this;
-            DontDestroyOnLoad(gameObject);
             rotationState.torqueStrength = torqueStrength;
         }
         else
@@ -66,6 +68,10 @@ public class PieceController : MonoBehaviour
     void Start()
     {
         mainCamera = Camera.main;
+    }
+
+    public void OnPressStart()
+    {
         SetActivePiece(PieceManager.Instance.Initialize());
     }
 
@@ -151,7 +157,13 @@ public class PieceController : MonoBehaviour
 
     private void OnPieceMouseHold()
     {
-        Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(new Vector3(Input.mousePosition.x, Input.mousePosition.y, mainCamera.WorldToScreenPoint(activePieceTransform.position).z));
+        Vector3 mouseWorldPos = mainCamera.ScreenToWorldPoint(
+            new Vector3(
+                Input.mousePosition.x,
+                Input.mousePosition.y,
+                mainCamera.WorldToScreenPoint(activePieceTransform.position).z
+            )
+        );
 
         Vector3 centerOfMassWorld = activePieceTransform.TransformPoint(activePieceRb.centerOfMass);
         Vector3 direction = mouseWorldPos - centerOfMassWorld;
@@ -180,7 +192,10 @@ public class PieceController : MonoBehaviour
         isDragging = false;
         rotationState.Reset();
         isPlacingPiece = false;
-        Debug.Assert(activePieceTransform != null, "Active piece does not have a Transform component.");
+        Debug.Assert(
+            activePieceTransform != null,
+            "Active piece does not have a Transform component."
+        );
         Debug.Assert(activePieceRb != null, "Active piece does not have a Rigidbody component.");
     }
 

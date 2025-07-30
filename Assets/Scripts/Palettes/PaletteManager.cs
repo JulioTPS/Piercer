@@ -6,7 +6,8 @@ using UnityEngine;
 #endif
 public class PaletteManager : MonoBehaviour
 {
-    [SerializeField] public Palette palette;
+    [SerializeField]
+    public Palette palette;
     public static PaletteManager Instance;
 
     public static System.Action OnInstanceReady;
@@ -20,7 +21,6 @@ public class PaletteManager : MonoBehaviour
             if (Instance == null)
             {
                 Instance = this;
-                DontDestroyOnLoad(gameObject);
                 InitializeColors();
                 OnInstanceReady?.Invoke();
             }
@@ -52,5 +52,11 @@ public class PaletteManager : MonoBehaviour
         }
         Debug.LogWarning($"Color '{colorName}' not found in palette.");
         return Color.magenta;
+    }
+
+    public void ResetSingleton()
+    {
+        Destroy(Instance.gameObject);
+        Instance = null;
     }
 }
