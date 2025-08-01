@@ -9,6 +9,7 @@ public class UIManager : MonoBehaviour
     public GameObject pauseButton;
     public GameObject playButton;
     public GameObject resetButton;
+    public GameObject exitButton;
     public TextMeshProUGUI startButtonText;
     private bool isPlaying = false;
 
@@ -16,6 +17,10 @@ public class UIManager : MonoBehaviour
     {
         Time.timeScale = 0f;
         pauseButton.SetActive(false);
+
+#if UNITY_WEBGL
+        exitButton.SetActive(false);
+#endif
     }
 
     void Start() { }
