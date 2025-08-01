@@ -8,6 +8,10 @@ This is a personal project made for the enjoyment of learning, it's not intended
 
 
 
-## License
+## 🪪 License
 
 This project is licensed under the MIT License.
+
+## 🌐 Live Demo
+
+Check out the live site here: [https://juliotps.github.io/Piercer/](https://juliotps.github.io/Piercer/)
