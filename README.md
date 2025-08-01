@@ -14,4 +14,4 @@ This project is licensed under the MIT License.
 
 ## 🌐 Live Demo
 
-Check out the live site here: [https://juliotps.github.io/Piercer/](https://juliotps.github.io/Piercer/)
+You can check out the live web build here: [https://juliotps.github.io/Piercer/](https://juliotps.github.io/Piercer/)
