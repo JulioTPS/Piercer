@@ -125,6 +125,7 @@ Material:
     - _GlossyReflections: 0
     - _Metallic: 0
     - _OcclusionStrength: 1
+    - _Offset: 8.93
     - _Parallax: 0.005
     - _QueueControl: 0
     - _QueueOffset: 0
@@ -138,13 +139,19 @@ Material:
     - _UV_index: 0
     - _WorkflowMode: 1
     - _ZWrite: 1
-    - _contrast: 18.04
-    - _contrast_2: -0.38
-    - _displace: 2
-    - _displace_2: 13.71
+    - _black_level: 0.44
+    - _brightness: 4.5
+    - _contrast: 1.27
+    - _contrast_2: -0.44
+    - _displace: 38.86
+    - _displace_2: 22.07
+    - _normal_strength: 0.61
+    - _rotate: 1
+    - _texture_dirt: 1.3
+    - _tilling: 1
     m_Colors:
     - _BaseColor: {r: 1, g: 1, b: 1, a: 1}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _Color: {r: 1, g: 0, b: 0.7467403, a: 0}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecColor: {r: 0.19999996, g: 0.19999996, b: 0.19999996, a: 1}
     - _color: {r: 1, g: 1, b: 1, a: 0}

@@ -1,13 +1,9 @@
-using System.Collections;
 using TMPro;
-using UnityEditor.SearchService;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class UIManager : MonoBehaviour
 {
-    public GameObject gameSystems;
-
     public GameObject menu;
     public RectTransform menuRecTransform;
     public GameObject pauseButton;
@@ -77,23 +73,6 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         OnGameResume();
     }
-
-    // private IEnumerator ResetGameCoroutine()
-    // {
-    //     Debug.Log("Resetting game...");
-    //     Time.timeScale = 0f;
-    //     isPlaying = false;
-    //     pauseButton.SetActive(false);
-    //     playButton.SetActive(true);
-    //     menu.SetActive(true);
-    //     startButtonText.text = "Start";
-    //     resetButton.SetActive(false);
-
-    //     Destroy(gameSystems);
-    //     yield return null;
-
-    //     SceneManager.LoadScene(SceneManager.GetActiveScene().name);
-    // }
 
     public void Logger()
     {

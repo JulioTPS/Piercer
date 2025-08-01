@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 #if UNITY_EDITOR
 [ExecuteInEditMode]
@@ -8,9 +9,12 @@ public class ColorSetter : MonoBehaviour
     private MaterialPropertyBlock materialPropertyBlock;
     public PaletteEnum colorName = PaletteEnum.DefaultColor;
     private bool hasSetColor = false;
+
     void Awake()
     {
-        meshRenderer = TryGetComponent<SkinnedMeshRenderer>(out var skinnedMeshRenderer) ? skinnedMeshRenderer : GetComponent<MeshRenderer>();
+        meshRenderer = TryGetComponent<SkinnedMeshRenderer>(out var skinnedMeshRenderer)
+            ? skinnedMeshRenderer
+            : GetComponent<MeshRenderer>();
         materialPropertyBlock ??= new MaterialPropertyBlock();
     }
 
@@ -49,9 +53,8 @@ public class ColorSetter : MonoBehaviour
     public void SetColor(Color color)
     {
         meshRenderer.GetPropertyBlock(materialPropertyBlock);
+        materialPropertyBlock.SetFloat("_Offset", UnityEngine.Random.Range(0f, 100f));
         materialPropertyBlock.SetColor("_Color", PaletteManager.Instance.GetColor(colorName));
         meshRenderer.SetPropertyBlock(materialPropertyBlock);
     }
 }
-
-
