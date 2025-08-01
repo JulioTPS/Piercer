@@ -212,26 +212,4 @@ public class PieceController : MonoBehaviour
     {
         publicControllerLock = lockState;
     }
-
-    // void OnDrawGizmos()
-    // {
-    //     if (activePieceRb != null)
-    //     {
-    //         // Draw center of mass as a red sphere
-    //         Gizmos.color = Color.red;
-    //         Vector3 worldCenterOfMass = activePieceTransform.TransformPoint(activePieceRb.centerOfMass);
-    //         Gizmos.DrawSphere(worldCenterOfMass, 0.1f);
-    //     }
-    // }
-
-    // void OnDrawGizmosSelected()
-    // {
-    //     // Only show when piece is selected in editor
-    //     if (activePieceRb != null)
-    //     {
-    //         Gizmos.color = Color.green;
-    //         Vector3 worldCenterOfMass = activePieceTransform.TransformPoint(activePieceRb.centerOfMass);
-    //         Gizmos.DrawWireSphere(worldCenterOfMass, 0.15f);
-    //     }
-    // }
 }

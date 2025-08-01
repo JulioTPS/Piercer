@@ -7,6 +7,7 @@ using UnityEngine.SceneManagement;
 public class UIManager : MonoBehaviour
 {
     public GameObject gameSystems;
+
     public GameObject menu;
     public RectTransform menuRecTransform;
     public GameObject pauseButton;
