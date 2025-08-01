@@ -1,3 +1,3 @@
 # Piercer
 
-A Unity Tetris like game. Made for experience.
+A Unity Tetris like game. Made to aquire some experience with the engine.
