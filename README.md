@@ -4,4 +4,4 @@ A Unity Tetris-like game, made to gain experience with the engine. The first rel
 
 I still have a few less essential features in mind that I might add in the future.
 
-This project is a personal project made for the enjoyment of learning, it's not intended for commercialization.
+This is a personal project made for the enjoyment of learning, it's not intended for commercialization.
