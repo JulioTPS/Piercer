@@ -58,10 +58,13 @@ public class PieceManager : MonoBehaviour
 
             if (movementDirection.magnitude > 0)
             {
+                Debug.Log("is moving: " + activePiece.name);
+
                 activePiece.GetComponent<Rigidbody>().AddForce(movementDirection, ForceMode.Force);
             }
             return;
         }
+
         movementDirection = Vector3.zero;
         rotationState.Reset();
         if (keptPiece != null)

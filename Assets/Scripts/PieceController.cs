@@ -92,8 +92,7 @@ public class PieceController : MonoBehaviour
         }
         else if (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.E))
         {
-            rotationState.isRotating = false;
-            rotationState.isPressingQ = false;
+            rotationState.Reset();
             PieceManager.Instance.SetRotationState(rotationState);
             if (!isDragging)
                 activePieceRb.angularDamping = angularDampingDefault;
@@ -101,9 +100,10 @@ public class PieceController : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F) && PieceManager.Instance.CanPlacePiece())
         {
+            OnPieceMouseUp();
             isPlacingPiece = true;
-            isDragging = false;
             rotationState.Reset();
+            PieceManager.Instance.SetRotationState(rotationState);
             SetActivePiece(PieceManager.Instance.PlacePiece());
         }
 
