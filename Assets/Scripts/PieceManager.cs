@@ -58,8 +58,6 @@ public class PieceManager : MonoBehaviour
 
             if (movementDirection.magnitude > 0)
             {
-                Debug.Log("is moving: " + activePiece.name);
-
                 activePiece.GetComponent<Rigidbody>().AddForce(movementDirection, ForceMode.Force);
             }
             return;
