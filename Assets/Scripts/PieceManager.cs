@@ -62,6 +62,7 @@ public class PieceManager : MonoBehaviour
             }
             return;
         }
+
         movementDirection = Vector3.zero;
         rotationState.Reset();
         if (keptPiece != null)
