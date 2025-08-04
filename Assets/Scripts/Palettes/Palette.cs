@@ -21,11 +21,10 @@ public enum PaletteEnum
     Arena,
     BackgroundMiddle,
     BackgroundAbove,
-    BackgroundBelow
+    BackgroundBelow,
 }
 
-
-[CreateAssetMenu(fileName = "Palette Template", menuName = "ScriptableObjects/Palette Template")]
+[CreateAssetMenu(fileName = "Palette Template", menuName = "Scriptable Objects/Palette Template")]
 public class Palette : ScriptableObject
 {
     public Color DefaultColor;
@@ -46,7 +45,9 @@ public class Palette : ScriptableObject
     private void OnEnable()
     {
         colorsDictionary = new Dictionary<PaletteEnum, Color>();
-        FieldInfo[] colorFields = typeof(Palette).GetFields(BindingFlags.Public | BindingFlags.Instance);
+        FieldInfo[] colorFields = typeof(Palette).GetFields(
+            BindingFlags.Public | BindingFlags.Instance
+        );
         PaletteEnum[] paletteEnums = (PaletteEnum[])Enum.GetValues(typeof(PaletteEnum));
 
         int colorFieldsLength = colorFields.Length;
@@ -54,7 +55,9 @@ public class Palette : ScriptableObject
         {
             if (colorFields[i].Name != paletteEnums[i].ToString())
             {
-                Debug.LogError($"Palette field '{colorFields[i].Name}' does not match PaletteEnum '{paletteEnums[i]}'. Please ensure they are in sync.");
+                Debug.LogError(
+                    $"Palette field '{colorFields[i].Name}' does not match PaletteEnum '{paletteEnums[i]}'. Please ensure they are in sync."
+                );
             }
             colorsDictionary[paletteEnums[i]] = (Color)colorFields[i].GetValue(this);
         }

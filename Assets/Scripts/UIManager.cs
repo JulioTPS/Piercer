@@ -78,9 +78,4 @@ public class UIManager : MonoBehaviour
         SceneManager.LoadScene(SceneManager.GetActiveScene().name);
         OnGameResume();
     }
-
-    public void Logger()
-    {
-        Debug.Log("test");
-    }
 }

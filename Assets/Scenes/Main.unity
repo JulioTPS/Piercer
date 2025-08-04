@@ -285,7 +285,7 @@ Light:
     serializedVersion: 2
     m_Bits: 4294967295
   m_RenderingLayerMask: 1
-  m_Lightmapping: 2
+  m_Lightmapping: 1
   m_LightShadowCasterMode: 0
   m_AreaSize: {x: 1, y: 1}
   m_BounceIntensity: 1
@@ -591,7 +591,7 @@ Light:
       e32: 0
       e33: 1
     m_UseCullingMatrixOverride: 0
-  m_Cookie: {fileID: 2800000, guid: bb6b60c1ce8cdeb4eb8346de0be88575, type: 3}
+  m_Cookie: {fileID: 2800000, guid: 1225c303c4506d7408dfdedbb0628cb9, type: 3}
   m_DrawHalo: 0
   m_Flare: {fileID: 0}
   m_RenderMode: 0
@@ -649,8 +649,8 @@ MonoBehaviour:
   m_CustomShadowLayers: 0
   m_ShadowLayerMask: 1
   m_ShadowRenderingLayers: 1
-  m_LightCookieSize: {x: 272.11, y: 48.4}
-  m_LightCookieOffset: {x: -10.7, y: -29.2}
+  m_LightCookieSize: {x: 101.9, y: 78.5}
+  m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 2
 --- !u!1 &411093863
 GameObject:
@@ -1256,7 +1256,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3235938009626597052, guid: 490544095b3f47a4bb046468bf037621, type: 3}
       propertyPath: m_margin.x
-      value: 0.012791634
+      value: 0.35577106
       objectReference: {fileID: 0}
     - target: {fileID: 3235938009626597052, guid: 490544095b3f47a4bb046468bf037621, type: 3}
       propertyPath: m_margin.z
@@ -3053,6 +3053,7 @@ GameObject:
   - component: {fileID: 2023623918}
   - component: {fileID: 2023623919}
   - component: {fileID: 2023623920}
+  - component: {fileID: 2023623921}
   m_Layer: 0
   m_Name: Game Systems
   m_TagString: Untagged
@@ -3165,6 +3166,19 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   palette: {fileID: 11400000, guid: 17ef059ac1d413b4ea658fcecc38baa9, type: 2}
+--- !u!114 &2023623921
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2023623914}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 13ca330b3f3bd814ba96b5d1d4217539, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SoundBank: {fileID: 11400000, guid: 9beb96b231a219040a373987a1bb4f4f, type: 2}
 --- !u!1 &2063768203
 GameObject:
   m_ObjectHideFlags: 0
