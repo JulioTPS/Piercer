@@ -3,17 +3,20 @@ using UnityEngine;
 public class Piece : MonoBehaviour
 {
     public bool isActive = false;
-    private float collisionMinPitch = 0.5f;
-    private float collisionMaxPitch = 0.6f;
-    private float grindingMinPitch = 0.3f;
-    private float grindingMaxPitch = 0.4f;
+    private float collisionMinPitch = 0.4f;
+    private float collisionMaxPitch = 0.5f;
+    private float grindingMinPitch = 0.5f;
+    private float grindingMaxPitch = 0.51f;
+    private float currentGrindingVolume = 0f;
+
+    private AudioSource grindingAudioSource = null;
 
     private void Update() { }
 
     private void OnCollisionEnter(Collision collision)
     {
         ContactPoint contactPoint = collision.contacts[0];
-        float pitch = Random.Range(collisionMinPitch, collisionMaxPitch);
+        float pitch = UnityEngine.Random.Range(collisionMinPitch, collisionMaxPitch);
         float volume = Mathf.InverseLerp(
             3f,
             600f,
@@ -29,18 +32,58 @@ public class Piece : MonoBehaviour
     {
         ContactPoint contactPoint = collision.contacts[0];
 
-        Vector3 relativeVelocity = collision.relativeVelocity;
-        Vector3 surfaceVelocity = Vector3.ProjectOnPlane(relativeVelocity, contactPoint.normal);
-        float slidingSpeed = surfaceVelocity.magnitude;
-        if (slidingSpeed > 0.1f)
+        float slidingSpeed = Vector3
+            .ProjectOnPlane(collision.relativeVelocity, contactPoint.normal)
+            .magnitude;
+        float targetVolume = 0f;
+        float targetPitch = Random.Range(grindingMinPitch, grindingMaxPitch);
+
+        if (slidingSpeed > 0.01f)
         {
-            float volume = Mathf.InverseLerp(0.1f, 15f, slidingSpeed);
+            targetVolume = Mathf.InverseLerp(0.01f, 10f, slidingSpeed);
+            // Debug.Log($"Sliding speed: {slidingSpeed:F2} m/s, Volume: {volume:F2}");
+        }
 
-            float pitch = Random.Range(grindingMinPitch, grindingMaxPitch);
+        currentGrindingVolume = Mathf.Lerp(
+            currentGrindingVolume,
+            targetVolume,
+            Time.fixedDeltaTime * 10f
+        );
 
-            Debug.Log($"Sliding speed: {slidingSpeed:F2} m/s, Volume: {volume:F2}");
+        if (grindingAudioSource == null)
+        {
+            grindingAudioSource = SoundFXManager.Instance.PlayContinuousSound(
+                "Grinding",
+                currentGrindingVolume,
+                targetPitch,
+                contactPoint.point,
+                grindingAudioSource
+            );
+        }
+        else
+        {
+            SoundFXManager.Instance.PlayContinuousSound(
+                "Grinding",
+                currentGrindingVolume,
+                targetPitch,
+                contactPoint.point,
+                grindingAudioSource
+            );
+        }
+    }
 
-            SoundFXManager.Instance.PlaySFX("Grinding", contactPoint.point, volume, pitch);
+    private void OnCollisionExit(Collision collision)
+    {
+        SoundFXManager.Instance.StopContinuousSound(grindingAudioSource);
+        grindingAudioSource = null;
+    }
+
+    void OnDestroy()
+    {
+        if (grindingAudioSource != null)
+        {
+            SoundFXManager.Instance.StopContinuousSound(grindingAudioSource);
+            grindingAudioSource = null;
         }
     }
 }

@@ -15,16 +15,7 @@ MonoBehaviour:
   soundEntries:
   - key: PieceHit
     clips:
-    - {fileID: 8300000, guid: ba7a8330139993c4f864dc9d5562034f, type: 3}
-    - {fileID: 8300000, guid: 3eaec8fd3e252c94baf2d6e804b4dfb1, type: 3}
-    - {fileID: 8300000, guid: 5155ef3fb3aba834ebe30adbed11d6fb, type: 3}
-    - {fileID: 8300000, guid: 1b8aa09cbc8bce24c970dae707c58b42, type: 3}
-    - {fileID: 8300000, guid: fd31b71cebff7084aaca7bb939fc3776, type: 3}
-    - {fileID: 8300000, guid: 470e272eac36a674ba04d6d6d5c71ff5, type: 3}
-    - {fileID: 8300000, guid: 2f1ae79bc5768d240b928c4e3389837e, type: 3}
-    - {fileID: 8300000, guid: b1cbf1e4323ef954089d7c6545b3eac9, type: 3}
-    - {fileID: 8300000, guid: d5f41d25294321d4da26bbb1b7dde75e, type: 3}
-    - {fileID: 8300000, guid: 1bbdcf4757296e642a4be236d2f5c48b, type: 3}
+    - {fileID: 8300000, guid: 479cec6fe7123ff4a8aa80ffb8ae219a, type: 3}
   - key: Grinding
     clips:
-    - {fileID: 8300000, guid: de1e129fd963f9f44b847bac5da2ce11, type: 3}
+    - {fileID: 8300000, guid: 9ab028983eac4844a92742ab5a570b8e, type: 3}

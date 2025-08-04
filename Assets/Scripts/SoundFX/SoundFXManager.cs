@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class SoundFXManager : MonoBehaviour
@@ -36,13 +37,56 @@ public class SoundFXManager : MonoBehaviour
             return;
         }
 
-        AudioSource audioSource = gameObject.AddComponent<AudioSource>();
+        GameObject soundObj = new GameObject("SoundFX");
+        soundObj.transform.SetParent(transform);
+        AudioSource audioSource = soundObj.AddComponent<AudioSource>();
         audioSource.transform.position = position;
         audioSource.clip = clip;
         audioSource.volume = volume;
         audioSource.spatialBlend = 1f;
         audioSource.pitch = pitch;
         audioSource.Play();
-        Destroy(audioSource, clip.length);
+        Destroy(soundObj, clip.length);
+    }
+
+    public AudioSource PlayContinuousSound(
+        string clipKey,
+        float volume,
+        float pitch,
+        Vector3 position = default,
+        AudioSource audioSource = null
+    )
+    {
+        if (audioSource == null)
+        {
+            GameObject soundObj = new GameObject("SoundFX");
+            audioSource = soundObj.AddComponent<AudioSource>();
+            soundObj.transform.SetParent(transform);
+            audioSource.clip = SoundBank.GetRandomClip(clipKey);
+            audioSource.loop = true;
+            audioSource.spatialBlend = 1f;
+
+            audioSource.transform.position = position;
+            audioSource.volume = volume;
+            audioSource.pitch = pitch;
+            audioSource.Play();
+        }
+        else
+        {
+            audioSource.transform.position = position;
+            audioSource.volume = volume;
+            audioSource.pitch = pitch;
+        }
+
+        return audioSource;
+    }
+
+    public void StopContinuousSound(AudioSource audioSource)
+    {
+        if (audioSource != null)
+        {
+            audioSource.Stop();
+            Destroy(audioSource.gameObject);
+        }
     }
 }
