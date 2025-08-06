@@ -7,6 +7,9 @@ public class SoundFXManager : MonoBehaviour
 
     public SoundBank SoundBank;
 
+    private float minAudioDistance = 10f;
+    private float audioStereoSpread = 40f;
+
     void Awake()
     {
         if (Instance == null)
@@ -45,16 +48,20 @@ public class SoundFXManager : MonoBehaviour
         audioSource.volume = volume;
         audioSource.spatialBlend = 1f;
         audioSource.pitch = pitch;
+        audioSource.spread = audioStereoSpread;
+
+        audioSource.minDistance = minAudioDistance;
         audioSource.Play();
         Destroy(soundObj, clip.length);
     }
 
     public AudioSource PlayContinuousSound(
         string clipKey,
-        float volume,
-        float pitch,
+        float volume = 1f,
+        float pitch = 1f,
         Vector3 position = default,
-        AudioSource audioSource = null
+        AudioSource audioSource = null,
+        float spatialBlend = 1f
     )
     {
         if (audioSource == null)
@@ -64,7 +71,10 @@ public class SoundFXManager : MonoBehaviour
             soundObj.transform.SetParent(transform);
             audioSource.clip = SoundBank.GetRandomClip(clipKey);
             audioSource.loop = true;
-            audioSource.spatialBlend = 1f;
+            audioSource.spatialBlend = spatialBlend;
+            audioSource.minDistance = minAudioDistance;
+            audioSource.dopplerLevel = 0f;
+            audioSource.spread = audioStereoSpread;
 
             audioSource.transform.position = position;
             audioSource.volume = volume;
@@ -79,6 +89,21 @@ public class SoundFXManager : MonoBehaviour
         }
 
         return audioSource;
+    }
+
+    public void UpdateContinuousSound(
+        AudioSource audioSource,
+        float volume = 1f,
+        float pitch = 1f,
+        Vector3 position = default
+    )
+    {
+        if (position != default)
+        {
+            audioSource.transform.position = position;
+        }
+        audioSource.volume = volume;
+        audioSource.pitch = pitch;
     }
 
     public void StopContinuousSound(AudioSource audioSource)
