@@ -1,3 +1,8 @@
-Pice impact and grinding sound effects made by editing the sound "Stone Slide Sound Effects" by <a href="https://pixabay.com/users/u_i15wxund59-49649042/?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=322794">u_i15wxund59</a> from <a href="https://pixabay.com//?utm_source=link-attribution&utm_medium=referral&utm_campaign=music&utm_content=322794">Pixabay</a>
+Ambient sound:
+wind bare trees birds 12.43 PM 230313_0570 by klankbeeld -- https://freesound.org/s/702716/ -- License: Attribution 4.0 -- https://creativecommons.org/licenses/by/4.0/ -- Modified from original: cut and edited for gameplay use.
 
-wind bare trees birds 12.43 PM 230313_0570 by klankbeeld -- https://freesound.org/s/702716/ -- Cut and Edited to get looped -- License: Attribution 4.0
+Grinding sound:
+Brick-Drag-Concrete-08.wav by DWOBoyle -- https://freesound.org/s/145703/ -- License: Attribution 4.0 -- https://creativecommons.org/licenses/by/4.0/ -- Modified from original: cut and edited for gameplay use.
+
+Impact sound:
+Brick-Drop-Concrete-04.wav by DWOBoyle -- https://freesound.org/s/145697/ -- License: Attribution 4.0 -- https://creativecommons.org/licenses/by/4.0/ -- Modified from original: cut and edited for gameplay use.

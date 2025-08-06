@@ -13,9 +13,12 @@ MonoBehaviour:
   m_Name: SoundBank
   m_EditorClassIdentifier: 
   soundEntries:
-  - key: PieceHit
+  - key: Impact
     clips:
-    - {fileID: 8300000, guid: 479cec6fe7123ff4a8aa80ffb8ae219a, type: 3}
+    - {fileID: 8300000, guid: ac7acdc3e478ddc47be947be9df81a90, type: 3}
   - key: Grinding
     clips:
-    - {fileID: 8300000, guid: 9ab028983eac4844a92742ab5a570b8e, type: 3}
+    - {fileID: 8300000, guid: 69d202eb05429604493b917e3b6a8532, type: 3}
+  - key: Ambient
+    clips:
+    - {fileID: 8300000, guid: 0ada50518a49bb5418341ef43b2d0475, type: 3}
