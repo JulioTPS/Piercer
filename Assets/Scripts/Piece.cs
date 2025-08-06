@@ -5,9 +5,19 @@ public class Piece : MonoBehaviour
     public bool isActive = false;
     private float MinPitch = 0.9f;
     private float MaxPitch = 1.1f;
-    private float currentGrindingVolume = 0f;
-    private const float grindPitch = 1f;
-    private const float spatialBlend = 1f;
+    private const float GRIND_PITCH = 1f;
+    private const float SPATIAL_BLEND = 1f;
+
+    private Rigidbody rb;
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody>();
+        if (rb == null)
+        {
+            Debug.LogError("Rigidbody component is missing on the Piece object.");
+        }
+    }
 
     private AudioSource grindingAudioSource = null;
 
@@ -32,8 +42,10 @@ public class Piece : MonoBehaviour
     {
         ContactPoint contactPoint = collision.contacts[0];
 
+        Vector3 velocityAtContact = rb.GetPointVelocity(contactPoint.point);
+
         float slidingSpeed = Vector3
-            .ProjectOnPlane(collision.relativeVelocity, contactPoint.normal)
+            .ProjectOnPlane(velocityAtContact, contactPoint.normal)
             .magnitude;
         float targetVolume = 0f;
 
@@ -43,29 +55,23 @@ public class Piece : MonoBehaviour
             // Debug.Log($"Sliding speed: {slidingSpeed:F2} m/s, Volume: {volume:F2}");
         }
 
-        currentGrindingVolume = Mathf.Lerp(
-            currentGrindingVolume,
-            targetVolume,
-            Time.fixedDeltaTime * 10f
-        );
-
         if (grindingAudioSource == null)
         {
             grindingAudioSource = SoundFXManager.Instance.PlayContinuousSound(
                 "Grinding",
-                currentGrindingVolume,
-                grindPitch,
+                targetVolume,
+                GRIND_PITCH,
                 contactPoint.point,
                 grindingAudioSource,
-                spatialBlend
+                SPATIAL_BLEND
             );
         }
         else
         {
             SoundFXManager.Instance.UpdateContinuousSound(
                 grindingAudioSource,
-                currentGrindingVolume,
-                grindPitch,
+                targetVolume,
+                GRIND_PITCH,
                 contactPoint.point
             );
         }
