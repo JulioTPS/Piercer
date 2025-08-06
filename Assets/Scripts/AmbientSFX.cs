@@ -57,14 +57,14 @@ public class AmbientSFX : MonoBehaviour
         }
     }
 
-    private float SimulateWindSpeed()
-    {
-        float dt = Time.deltaTime;
-        float theta = 0.5f; // Return rate to mean
-        float mu = 6f; // Long-term average wind speed
-        float sigma = 2f; // Noise intensity (gustiness)
-        float noise = Random.Range(-1f, 1f);
+    // private float SimulateWindSpeed()
+    // {
+    //     float dt = Time.deltaTime;
+    //     float theta = 0.5f; // Return rate to mean
+    //     float mu = 6f; // Long-term average wind speed
+    //     float sigma = 2f; // Noise intensity (gustiness)
+    //     float noise = Random.Range(-1f, 1f);
 
-        windSpeed += theta * (mu - windSpeed) * dt + sigma * Mathf.Sqrt(dt) * noise;
-    }
+    //     windSpeed += theta * (mu - windSpeed) * dt + sigma * Mathf.Sqrt(dt) * noise;
+    // }
 }
