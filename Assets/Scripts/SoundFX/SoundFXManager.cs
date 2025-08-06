@@ -98,7 +98,6 @@ public class SoundFXManager : MonoBehaviour
         Vector3 position = default
     )
     {
-        Debug.Log(volume);
         if (position != default)
         {
             audioSource.transform.position = position;
