@@ -86,7 +86,7 @@ public class GameManager : MonoBehaviour
 
     public void AddScore(int _score)
     {
-        score += _score * 100;
+        score += _score;
 
         scoreTMPro.text = "Score: " + score;
     }

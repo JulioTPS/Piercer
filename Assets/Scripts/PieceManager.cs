@@ -137,6 +137,7 @@ public class PieceManager : MonoBehaviour
             if (gridY < 0)
             {
                 blockTransform.SetParent(null);
+                GameManager.Instance.AddScore(-50);
                 Destroy(blockTransform.gameObject);
                 continue;
             }
