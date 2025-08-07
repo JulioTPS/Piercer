@@ -22,3 +22,6 @@ MonoBehaviour:
   - key: Ambient
     clips:
     - {fileID: 8300000, guid: 0ada50518a49bb5418341ef43b2d0475, type: 3}
+  - key: BGM
+    clips:
+    - {fileID: 8300000, guid: ac3f09c18dff9cb4189c5eb72a8ecce3, type: 3}
