@@ -1,11 +1,9 @@
-Ambient sound:
-wind bare trees birds 12.43 PM 230313_0570 by klankbeeld -- https://freesound.org/s/702716/ -- License: Attribution 4.0 -- https://creativecommons.org/licenses/by/4.0/ -- Modified from original: cut and edited for gameplay use.
+<size=100%>Sound Assets</size>
 
-Grinding sound:
-Brick-Drag-Concrete-08.wav by DWOBoyle -- https://freesound.org/s/145703/ -- License: Attribution 4.0 -- https://creativecommons.org/licenses/by/4.0/ -- Modified from original: cut and edited for gameplay use.
+<size=47%><align=left><b>Grinding:</b> Brick-Drag-Concrete-08.wav by <b>DWOBoyle</b> - <a href="https://freesound.org/s/145703/">https://freesound.org/s/145703/</a>
+<b>Impact:</b> Brick-Drop-Concrete-04.wav by <b>DWOBoyle</b> - <a href="https://freesound.org/s/145697/">https://freesound.org/s/145697/</a>
+<b>Ambient:</b> wind bare trees birds 12.43 PM 230313_0570 by <b>klankbeeld</b> - <a href="https://freesound.org/s/702716/">https://freesound.org/s/702716/</a>
+<b>BGM:</b> Peaceful Place by <b>Universfield</b> - <a href="https://freesound.org/s/712308/">https://freesound.org/s/712308/</a></align></size>
 
-Impact sound:
-Brick-Drop-Concrete-04.wav by DWOBoyle -- https://freesound.org/s/145697/ -- License: Attribution 4.0 -- https://creativecommons.org/licenses/by/4.0/ -- Modified from original: cut and edited for gameplay use.
-
-BGM:
-Peaceful Place by Universfield -- https://freesound.org/s/712308/ -- License: Attribution 4.0 -- -- https://creativecommons.org/licenses/by/4.0/ -- Modified from original: edited for gameplay use.
+<size=42%><i>All sounds are licensed under CC BY 4.0 - Attribution 4.0 International (<a href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a>)</i>
+<i>All sounds were edited for gameplay use</i></size>

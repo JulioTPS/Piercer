@@ -12,11 +12,15 @@ public class PieceManager : MonoBehaviour
     public Vector3 spawnPosition = new(0, 21, 0);
     private Piece keptPiece;
     private Piece activePiece;
+    private Rigidbody activePieceRb;
     private PieceBag pieceBag;
     private bool swapPieces = false;
     private bool isPlacingPiece = false;
     public RotationState rotationState;
     private Vector3 movementDirection;
+    private bool shouldJump = false;
+    public float jumpStrength = 2f;
+    private bool isGrounded = false;
 
     [SerializeField]
     private readonly int PreviewPiecesSpacing = 3;
@@ -53,18 +57,41 @@ public class PieceManager : MonoBehaviour
                     0f,
                     (rotationState.isPressingQ ? 1f : -1f) * rotationState.torqueStrength
                 );
-                activePiece.GetComponent<Rigidbody>().AddTorque(torque, ForceMode.Force);
+                activePieceRb.AddTorque(torque, ForceMode.Force);
+            }
+
+            if (shouldJump)
+            {
+                isGrounded = Physics.Raycast(
+                    activePieceRb.position,
+                    Vector3.down,
+                    out RaycastHit hit,
+                    1.1f
+                );
+
+                if (isGrounded && hit.collider.transform.IsChildOf(activePiece.transform))
+                {
+                    isGrounded = false;
+                }
+
+                if (isGrounded)
+                {
+                    activePieceRb.AddForce(Vector3.up * jumpStrength, ForceMode.Impulse);
+                    shouldJump = false;
+                    isGrounded = false;
+                }
             }
 
             if (movementDirection.magnitude > 0)
             {
-                activePiece.GetComponent<Rigidbody>().AddForce(movementDirection, ForceMode.Force);
+                activePieceRb.AddForce(movementDirection, ForceMode.Force);
             }
             return;
         }
 
         movementDirection = Vector3.zero;
-        rotationState.Reset();
+        rotationState.isRotating = false;
+        rotationState.isPressingQ = false;
         if (keptPiece != null)
         {
             Rigidbody keptPieceRb = keptPiece.GetComponent<Rigidbody>();
@@ -74,11 +101,9 @@ public class PieceManager : MonoBehaviour
         }
         if (activePiece != null)
         {
-            Rigidbody activePieceRB = activePiece.GetComponent<Rigidbody>();
-
-            activePieceRB.isKinematic = true;
-            activePieceRB.useGravity = false;
-            activePieceRB.transform.SetPositionAndRotation(spawnPosition, Quaternion.identity);
+            activePieceRb.isKinematic = true;
+            activePieceRb.useGravity = false;
+            activePieceRb.transform.SetPositionAndRotation(spawnPosition, Quaternion.identity);
         }
         swapPieces = false;
     }
@@ -151,6 +176,7 @@ public class PieceManager : MonoBehaviour
         GridManager.Instance.CheckAndClearLines(minY, maxY);
         Destroy(activePiece.transform.root.gameObject);
         activePiece = SpawnNextPiece();
+        activePieceRb = activePiece.GetComponent<Rigidbody>();
         isPlacingPiece = false;
         return activePiece;
     }
@@ -164,6 +190,7 @@ public class PieceManager : MonoBehaviour
     public Piece SpawnNextPiece()
     {
         activePiece = previewPieces[0];
+        activePieceRb = activePiece.GetComponent<Rigidbody>();
         Rigidbody activePieceeRb = activePiece.GetComponent<Rigidbody>();
         activePieceeRb.position = spawnPosition;
         for (int i = 0; i < maxPreviewPieces - 1; i++)
@@ -186,6 +213,7 @@ public class PieceManager : MonoBehaviour
         pieceBag ??= new PieceBag(pieces);
 
         activePiece = SpawnNewPiece(spawnPosition);
+        activePieceRb = activePiece.GetComponent<Rigidbody>();
         for (int i = 0; i < maxPreviewPieces; i++)
         {
             Vector3 newPreviewPosition =
@@ -204,6 +232,11 @@ public class PieceManager : MonoBehaviour
     public void SetMovement(Vector3 movementDirection)
     {
         this.movementDirection = movementDirection;
+    }
+
+    public void JumpPiece()
+    {
+        shouldJump = true;
     }
 }
 

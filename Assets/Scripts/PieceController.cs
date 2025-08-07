@@ -19,13 +19,6 @@ public struct RotationState
         this.isPressingQ = isPressingQ;
         this.torqueStrength = torqueStrength;
     }
-
-    public void Reset()
-    {
-        isRotating = false;
-        isPressingQ = false;
-        torqueStrength = 16f;
-    }
 }
 
 public class PieceController : MonoBehaviour
@@ -46,6 +39,7 @@ public class PieceController : MonoBehaviour
     private bool isPlacingPiece = false;
     private bool publicControllerLock = false;
     private bool isDragging = false;
+    private bool canKeymove = false;
 
     private Camera mainCamera;
     private Vector3 movementDirection = Vector3.zero;
@@ -82,27 +76,35 @@ public class PieceController : MonoBehaviour
 
         HandleMouseInput();
 
-        bool isPressingQ = Input.GetKey(KeyCode.Q);
-        if (isPressingQ || Input.GetKey(KeyCode.E))
+        if (canKeymove)
         {
-            rotationState.isRotating = true;
-            rotationState.isPressingQ = isPressingQ;
-            activePieceRb.angularDamping = angularDamping;
-            PieceManager.Instance.SetRotationState(rotationState);
-        }
-        else if (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.E))
-        {
-            rotationState.Reset();
-            PieceManager.Instance.SetRotationState(rotationState);
-            if (!isDragging)
-                activePieceRb.angularDamping = angularDampingDefault;
+            bool isPressingQ = Input.GetKey(KeyCode.Q);
+            if (isPressingQ || Input.GetKey(KeyCode.E))
+            {
+                rotationState.isRotating = true;
+                rotationState.isPressingQ = isPressingQ;
+                activePieceRb.angularDamping = angularDamping;
+                PieceManager.Instance.SetRotationState(rotationState);
+            }
+            else if (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.E))
+            {
+                Reset();
+                PieceManager.Instance.SetRotationState(rotationState);
+                if (!isDragging)
+                    activePieceRb.angularDamping = angularDampingDefault;
+            }
+
+            if (Input.GetKey(KeyCode.Space))
+            {
+                PieceManager.Instance.JumpPiece();
+            }
         }
 
         if (Input.GetKeyDown(KeyCode.F) && PieceManager.Instance.CanPlacePiece())
         {
             OnPieceMouseUp();
             isPlacingPiece = true;
-            rotationState.Reset();
+            Reset();
             activePieceRb.GetComponent<Piece>().isActive = false;
             PieceManager.Instance.SetRotationState(rotationState);
             SetActivePiece(PieceManager.Instance.PlacePiece());
@@ -112,7 +114,7 @@ public class PieceController : MonoBehaviour
         {
             isPlacingPiece = true;
             OnPieceMouseUp();
-            rotationState.Reset();
+            Reset();
             activePieceRb.GetComponent<Piece>().isActive = false;
             activePieceRb.isKinematic = true;
             activePieceRb.useGravity = false;
@@ -147,6 +149,7 @@ public class PieceController : MonoBehaviour
     private void OnPieceMouseDown(Vector3 worldHitPoint)
     {
         isDragging = true;
+        canKeymove = true;
 
         Vector3 localHitPoint = activePieceTransform.InverseTransformPoint(worldHitPoint);
         localHitPoint.z = 0f;
@@ -186,6 +189,7 @@ public class PieceController : MonoBehaviour
 
     private void SetActivePiece(Piece newPiece)
     {
+        canKeymove = false;
         newPiece.isActive = true;
         activePieceTransform = newPiece.transform;
         activePieceRb = newPiece.GetComponent<Rigidbody>();
@@ -193,7 +197,7 @@ public class PieceController : MonoBehaviour
         activePieceRb.angularDamping = angularDampingDefault;
         StartCoroutine(EnablePhysicsNextFrame());
         isDragging = false;
-        rotationState.Reset();
+        Reset();
         isPlacingPiece = false;
         Debug.Assert(
             activePieceTransform != null,
@@ -214,5 +218,11 @@ public class PieceController : MonoBehaviour
     public void SwitchControllerLock(bool lockState)
     {
         publicControllerLock = lockState;
+    }
+
+    public void Reset()
+    {
+        rotationState.isRotating = false;
+        rotationState.isPressingQ = false;
     }
 }

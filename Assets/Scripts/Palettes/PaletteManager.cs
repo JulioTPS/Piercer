@@ -53,10 +53,4 @@ public class PaletteManager : MonoBehaviour
         Debug.LogWarning($"Color '{colorName}' not found in palette.");
         return Color.magenta;
     }
-
-    public void ResetSingleton()
-    {
-        Destroy(Instance.gameObject);
-        Instance = null;
-    }
 }
