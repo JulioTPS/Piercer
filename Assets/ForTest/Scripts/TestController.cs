@@ -51,10 +51,11 @@ public class TestController : MonoBehaviour
             moveDirection.z = 0f;
         }
 
-        isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.1f);
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+        if (Input.GetKeyDown(KeyCode.Space))
         {
-            moveDirection.y = 1f;
+            isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.01f);
+            if (isGrounded)
+                moveDirection.y = 1f;
         }
 
         if (Input.GetKey(KeyCode.Q))
@@ -87,6 +88,7 @@ public class TestController : MonoBehaviour
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
             moveDirection.y = 0f;
+            isGrounded = false;
         }
     }
 

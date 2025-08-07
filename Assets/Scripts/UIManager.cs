@@ -5,11 +5,12 @@ using UnityEngine.SceneManagement;
 public class UIManager : MonoBehaviour
 {
     public GameObject menu;
-    public RectTransform menuRecTransform;
     public GameObject pauseButton;
     public GameObject playButton;
     public GameObject resetButton;
     public GameObject exitButton;
+    public TextMeshProUGUI attributionText;
+    public TextAsset attributionTextFile;
     public TextMeshProUGUI startButtonText;
     private bool isPlaying = false;
 
@@ -23,7 +24,16 @@ public class UIManager : MonoBehaviour
 #endif
     }
 
-    void Start() { }
+    void Start()
+    {
+        if (attributionText == null)
+        {
+            Debug.LogError("Credits text file is not assigned in the UIManager.");
+            return;
+        }
+        attributionText.richText = true;
+        attributionText.text = attributionTextFile.text;
+    }
 
     void Update()
     {
@@ -70,7 +80,6 @@ public class UIManager : MonoBehaviour
         startButtonText.text = "Continue";
         resetButton.SetActive(true);
         isPlaying = true;
-        menuRecTransform.SetSizeWithCurrentAnchors(RectTransform.Axis.Vertical, 200);
     }
 
     public void OnGameReset()
