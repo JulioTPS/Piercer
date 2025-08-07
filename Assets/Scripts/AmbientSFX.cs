@@ -1,9 +1,8 @@
-using System.Collections;
 using UnityEngine;
 
 public class AmbientSFX : MonoBehaviour
 {
-    public AudioSource audioSource;
+    public AudioSource ambientAudioSource;
     private float currentVolume = 0f;
     private float startVolume = 0f;
     private float targetVolume = 0f;
@@ -15,6 +14,11 @@ public class AmbientSFX : MonoBehaviour
     public float volumeStayTime = 3f;
     private float timer = 0f;
 
+    public float BGMVolume = 0.2f;
+    public float BGMInterval = 360f;
+    private float timerBGM = 0f;
+
+    private const float MIN_AUDIO_DISTANCE = 0f;
     private const float PITCH = 1f;
     private const float SPATIAL_BLEND = 0f;
 
@@ -24,27 +28,31 @@ public class AmbientSFX : MonoBehaviour
         timer = 0f;
         startVolume = currentVolume;
         targetVolume = Random.Range(minAudioVolume, maxAudioVolume);
+
+        timerBGM = 60f;
     }
 
     void Start()
     {
-        audioSource.volume = currentVolume;
-        if (audioSource != null)
+        if (ambientAudioSource != null)
         {
-            SoundFXManager.Instance.PlayContinuousSound(
+            ambientAudioSource = SoundFXManager.Instance.PlayContinuousSound(
                 "Ambient",
                 currentVolume,
                 PITCH,
                 transform.position,
-                audioSource,
+                ambientAudioSource,
                 SPATIAL_BLEND
             );
         }
+        ambientAudioSource.volume = currentVolume;
     }
 
     void Update()
     {
-        timer += Time.unscaledDeltaTime;
+        float unscaledDeltaTime = Time.unscaledDeltaTime;
+        timer += unscaledDeltaTime;
+        timerBGM += unscaledDeltaTime;
         if (timer <= volumeTransitionTime)
         {
             currentVolume = Mathf.SmoothStep(
@@ -59,6 +67,19 @@ public class AmbientSFX : MonoBehaviour
             startVolume = currentVolume;
             targetVolume = Random.Range(minAudioVolume, maxAudioVolume);
         }
-        SoundFXManager.Instance.UpdateContinuousSound(audioSource, currentVolume, PITCH);
+        SoundFXManager.Instance.UpdateContinuousSound(ambientAudioSource, currentVolume, PITCH);
+
+        if (timerBGM > BGMInterval)
+        {
+            timerBGM = 0f;
+            SoundFXManager.Instance.PlaySFX(
+                "BGM",
+                transform.position,
+                BGMVolume,
+                PITCH,
+                MIN_AUDIO_DISTANCE,
+                SPATIAL_BLEND
+            );
+        }
     }
 }

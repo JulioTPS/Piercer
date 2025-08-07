@@ -25,6 +25,8 @@ public class Piece : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
+        if (!isActive)
+            return;
         ContactPoint contactPoint = collision.contacts[0];
         float volume = Mathf.InverseLerp(
             3f,
@@ -40,6 +42,9 @@ public class Piece : MonoBehaviour
 
     private void OnCollisionStay(Collision collision)
     {
+        if (!isActive)
+            return;
+
         ContactPoint contactPoint = collision.contacts[0];
 
         Vector3 velocityAtContact = rb.GetPointVelocity(contactPoint.point);
@@ -53,6 +58,11 @@ public class Piece : MonoBehaviour
         {
             targetVolume = Mathf.InverseLerp(0.01f, 10f, slidingSpeed);
             // Debug.Log($"Sliding speed: {slidingSpeed:F2} m/s, Volume: {volume:F2}");
+        }
+        else
+        {
+            OnCollisionExit();
+            return;
         }
 
         if (grindingAudioSource == null)
@@ -77,8 +87,11 @@ public class Piece : MonoBehaviour
         }
     }
 
-    private void OnCollisionExit(Collision collision)
+    private void OnCollisionExit()
     {
+        if (!isActive)
+            return;
+
         SoundFXManager.Instance.StopContinuousSound(grindingAudioSource);
         grindingAudioSource = null;
     }

@@ -1,4 +1,3 @@
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class SoundFXManager : MonoBehaviour
@@ -7,7 +6,7 @@ public class SoundFXManager : MonoBehaviour
 
     public SoundBank SoundBank;
 
-    private float minAudioDistance = 10f;
+    public float stoppingLoopTime = 0.1f;
     private float audioStereoSpread = 40f;
 
     void Awake()
@@ -30,7 +29,9 @@ public class SoundFXManager : MonoBehaviour
         string clipKey,
         Vector3 position = default,
         float volume = 1f,
-        float pitch = 1f
+        float pitch = 1f,
+        float minAudioDistance = 10f,
+        float spatialBlend = 1f
     )
     {
         AudioClip clip = SoundBank.GetRandomClip(clipKey);
@@ -46,7 +47,7 @@ public class SoundFXManager : MonoBehaviour
         audioSource.transform.position = position;
         audioSource.clip = clip;
         audioSource.volume = volume;
-        audioSource.spatialBlend = 1f;
+        audioSource.spatialBlend = spatialBlend;
         audioSource.pitch = pitch;
         audioSource.spread = audioStereoSpread;
 
@@ -61,7 +62,8 @@ public class SoundFXManager : MonoBehaviour
         float pitch = 1f,
         Vector3 position = default,
         AudioSource audioSource = null,
-        float spatialBlend = 1f
+        float spatialBlend = 1f,
+        float minAudioDistance = 10f
     )
     {
         if (audioSource == null)
@@ -110,6 +112,26 @@ public class SoundFXManager : MonoBehaviour
     {
         if (audioSource != null)
         {
+            StartCoroutine(StopSoundCoroutine(audioSource));
+        }
+    }
+
+    private System.Collections.IEnumerator StopSoundCoroutine(AudioSource audioSource)
+    {
+        float initialVolume = audioSource.volume;
+        if (initialVolume <= 0f)
+        {
+            audioSource.Stop();
+            Destroy(audioSource.gameObject);
+            yield break;
+        }
+        else
+        {
+            for (float t = 0; t < stoppingLoopTime; t += Time.deltaTime)
+            {
+                audioSource.volume = Mathf.Lerp(initialVolume, 0f, t / stoppingLoopTime);
+                yield return null;
+            }
             audioSource.Stop();
             Destroy(audioSource.gameObject);
         }
