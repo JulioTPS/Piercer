@@ -1475,7 +1475,7 @@ MonoBehaviour:
       m_Calls: []
   m_text: '<size=100%>Sound Assets</size>
 
-    
+
 
     <size=47%><align=left><b>Grinding:</b>
     Brick-Drag-Concrete-08.wav by <b>DWOBoyle</b> - <a href="https://freesound.org/s/145703/">https://freesound.org/s/145703/</a>
@@ -1489,7 +1489,7 @@ MonoBehaviour:
     <b>BGM:</b>
     Peaceful Place by <b>Universfield</b> - <a href="https://freesound.org/s/712308/">https://freesound.org/s/712308/</a></align></size>
 
-    
+
 
     <size=42%><i>All
     sounds are licensed under CC BY 4.0 - Attribution 4.0 International (<a href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a>)</i>
@@ -4113,7 +4113,7 @@ MonoBehaviour:
   movementStrength: 50
   linearDamping: 8
   linearDampingDefault: 0
-  torqueStrength: 20
+  torqueStrength: 30
   angularDamping: 6
   angularDampingDefault: 0.1
 --- !u!114 &2023623919

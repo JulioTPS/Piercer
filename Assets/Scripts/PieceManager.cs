@@ -1,5 +1,7 @@
+using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework.Internal;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class PieceManager : MonoBehaviour
@@ -30,6 +32,17 @@ public class PieceManager : MonoBehaviour
 
     [SerializeField]
     public readonly float placingPieceSnappingMargin = 25f;
+
+    [Header("Piece Fitting")]
+    private Vector3 lastPosition = Vector3.zero;
+    private float forceToStuck = 200f;
+    private float stuckTimer = 0f;
+    private float stuckDetectionTime = 0.3f;
+    private float distanceToStuck = 0.01f;
+    private float fittingTime = 0.3f;
+    private float fittingAngleMargin = 45f;
+    private bool isFittingPiece = false;
+    private Coroutine fitPieceCoroutine = null;
 
     void Awake()
     {
@@ -84,11 +97,41 @@ public class PieceManager : MonoBehaviour
 
             if (movementDirection.magnitude > 0)
             {
+                float distanceMoved = Vector3.Distance(activePieceRb.position, lastPosition);
+                if (distanceMoved < distanceToStuck && movementDirection.magnitude >= forceToStuck)
+                {
+                    stuckTimer += Time.fixedDeltaTime;
+                    if (!isFittingPiece && stuckTimer >= stuckDetectionTime)
+                    {
+                        stuckTimer = 0f;
+                        fitPieceCoroutine = StartCoroutine(StartFittingPiece());
+                    }
+                }
+                else if (isFittingPiece)
+                {
+                    StopFittingPiece();
+                    stuckTimer = 0f;
+                }
+                else
+                {
+                    stuckTimer = 0f;
+                }
+                lastPosition = activePieceRb.position;
                 activePieceRb.AddForce(movementDirection, ForceMode.Force);
+            }
+            else if (isFittingPiece)
+            {
+                StopFittingPiece();
+                stuckTimer = 0f;
+            }
+            else
+            {
+                stuckTimer = 0f;
             }
             return;
         }
 
+        StopFittingPiece();
         movementDirection = Vector3.zero;
         rotationState.isRotating = false;
         rotationState.isPressingQ = false;
@@ -138,6 +181,7 @@ public class PieceManager : MonoBehaviour
 
     public Piece PlacePiece()
     {
+        StopFittingPiece();
         Transform activePieceTransform = activePiece.transform;
         Rigidbody activePieceRb = activePiece.GetComponent<Rigidbody>();
         float eulerZ = activePieceTransform.eulerAngles.z;
@@ -176,7 +220,6 @@ public class PieceManager : MonoBehaviour
         GridManager.Instance.CheckAndClearLines(minY, maxY);
         Destroy(activePiece.transform.root.gameObject);
         activePiece = SpawnNextPiece();
-        activePieceRb = activePiece.GetComponent<Rigidbody>();
         isPlacingPiece = false;
         return activePiece;
     }
@@ -237,6 +280,54 @@ public class PieceManager : MonoBehaviour
     public void JumpPiece()
     {
         shouldJump = true;
+    }
+
+    private IEnumerator StartFittingPiece()
+    {
+        Transform pieceRbTransform = activePieceRb.transform;
+        float eulerZ = pieceRbTransform.eulerAngles.z;
+        float snappedZ = Mathf.Round(eulerZ / 90f) * 90f;
+
+        if (Mathf.Abs(Mathf.DeltaAngle(eulerZ, snappedZ)) <= fittingAngleMargin)
+        {
+            isFittingPiece = false;
+            float startingRotation = pieceRbTransform.eulerAngles.z;
+            Vector3 startingPosition = pieceRbTransform.position;
+            Vector3 targetPosition = new Vector3(
+                Mathf.Round(pieceRbTransform.position.x),
+                Mathf.Round(pieceRbTransform.position.y),
+                pieceRbTransform.position.z
+            );
+
+            for (float t = 0; t < fittingTime; t += Time.fixedDeltaTime)
+            {
+                pieceRbTransform.SetPositionAndRotation(
+                    new Vector3(
+                        Mathf.SmoothStep(startingPosition.x, targetPosition.x, t / fittingTime),
+                        Mathf.SmoothStep(startingPosition.y, targetPosition.y, t / fittingTime),
+                        startingPosition.z
+                    ),
+                    Quaternion.Euler(
+                        0,
+                        0,
+                        Mathf.SmoothStep(startingRotation, snappedZ, t / fittingTime)
+                    )
+                );
+                yield return new WaitForFixedUpdate();
+            }
+        }
+
+        isFittingPiece = false;
+    }
+
+    private void StopFittingPiece()
+    {
+        if (fitPieceCoroutine != null)
+        {
+            stuckTimer = 0f;
+            StopCoroutine(fitPieceCoroutine);
+            isFittingPiece = false;
+        }
     }
 }
 

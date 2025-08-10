@@ -12,61 +12,92 @@ public class TestController : MonoBehaviour
 
     private RotationState rotationState = RotationState.Neutral;
     public float moveForce = 10f;
-    public float jumpForce = 30f;
+    public float rotateForce = 20f;
+    public float flyForce = 20f;
+    public float jumpForce = 10f;
     public float maxVelocity = 20f;
     private Vector3 moveDirection = Vector3.zero;
     private Rigidbody rb;
     private bool isGrounded = false;
+    public bool canFly = false;
+    public Camera playerCamera;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        playerCamera = Camera.main;
     }
 
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.W))
-        {
-            moveDirection.x = 1f;
-        }
-        else if (Input.GetKeyDown(KeyCode.S))
-        {
-            moveDirection.x = -1f;
-        }
-        else if (Input.GetKeyUp(KeyCode.W) || Input.GetKeyUp(KeyCode.S))
-        {
-            moveDirection.x = 0f;
-        }
+        playerCamera.transform.position = transform.TransformPoint(new Vector3(0f, 1.5f, -3f));
+        playerCamera.transform.LookAt(transform.position + Vector3.up * 1.5f);
 
-        if (Input.GetKeyDown(KeyCode.A))
+        bool pressedW = Input.GetKey(KeyCode.W);
+        bool pressedS = Input.GetKey(KeyCode.S);
+        if (pressedW && !pressedS)
         {
             moveDirection.z = 1f;
         }
-        else if (Input.GetKeyDown(KeyCode.D))
+        else if (pressedS && !pressedW)
         {
             moveDirection.z = -1f;
         }
-        else if (Input.GetKeyUp(KeyCode.A) || Input.GetKeyUp(KeyCode.D))
+        else
         {
             moveDirection.z = 0f;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        bool pressedA = Input.GetKey(KeyCode.A);
+        bool pressedD = Input.GetKey(KeyCode.D);
+        if (pressedA && !pressedD)
+        {
+            moveDirection.x = -1f;
+        }
+        else if (pressedD && !pressedA)
+        {
+            moveDirection.x = 1f;
+        }
+        else
+        {
+            moveDirection.x = 0f;
+        }
+
+        bool pressedSpace = Input.GetKey(KeyCode.Space);
+        if (pressedSpace && !canFly)
         {
             isGrounded = Physics.Raycast(transform.position, Vector3.down, 1.01f);
             if (isGrounded)
                 moveDirection.y = 1f;
         }
+        else if (canFly)
+        {
+            bool pressedControl = Input.GetKey(KeyCode.LeftControl);
+            if (pressedSpace && !pressedControl)
+            {
+                moveDirection.y = 1f;
+            }
+            else if (pressedControl && !pressedSpace)
+            {
+                moveDirection.y = -1f;
+            }
+            else
+            {
+                moveDirection.y = 0f;
+            }
+        }
 
-        if (Input.GetKey(KeyCode.Q))
+        bool pressedQ = Input.GetKey(KeyCode.Q);
+        bool pressedE = Input.GetKey(KeyCode.E);
+        if (pressedQ && !pressedE)
         {
             rotationState = RotationState.Left;
         }
-        else if (Input.GetKey(KeyCode.E))
+        else if (pressedE && !pressedQ)
         {
             rotationState = RotationState.Right;
         }
-        else if (Input.GetKeyUp(KeyCode.Q) || Input.GetKeyUp(KeyCode.E))
+        else
         {
             rotationState = RotationState.Neutral;
         }
@@ -84,6 +115,11 @@ public class TestController : MonoBehaviour
 
     private void HandleJump()
     {
+        if (canFly)
+        {
+            rb.AddForce(Vector3.up * moveDirection.y * flyForce, ForceMode.Force);
+            return;
+        }
         if (moveDirection.y > 0f && isGrounded)
         {
             rb.AddForce(Vector3.up * jumpForce, ForceMode.Impulse);
@@ -97,10 +133,10 @@ public class TestController : MonoBehaviour
         switch (rotationState)
         {
             case RotationState.Left:
-                transform.Rotate(Vector3.up, -90 * Time.deltaTime);
+                rb.AddTorque(transform.up * -rotateForce, ForceMode.Force);
                 break;
             case RotationState.Right:
-                transform.Rotate(Vector3.up, 90 * Time.deltaTime);
+                rb.AddTorque(transform.up * rotateForce, ForceMode.Force);
                 break;
         }
     }
@@ -109,19 +145,17 @@ public class TestController : MonoBehaviour
     {
         Vector3 horizontalMovement = new(moveDirection.x, 0f, moveDirection.z);
 
-        if (horizontalMovement != Vector3.zero)
-        {
-            rb.AddForce(
-                transform.rotation * horizontalMovement.normalized * moveForce,
-                ForceMode.Force
-            );
-        }
+        if (horizontalMovement == Vector3.zero)
+            return;
+
+        Quaternion cameraYaw = Quaternion.Euler(0, playerCamera.transform.localEulerAngles.y, 0);
+        rb.AddForce(cameraYaw * horizontalMovement.normalized * moveForce, ForceMode.Force);
 
         Vector3 horizontalVelocity = new(rb.linearVelocity.x, 0f, rb.linearVelocity.z);
 
         if (horizontalVelocity.magnitude > maxVelocity)
         {
-            Vector3 clampedHorizontal = horizontalVelocity.normalized * maxVelocity;
+            Vector3 clampedHorizontal = cameraYaw * horizontalVelocity.normalized * maxVelocity;
 
             rb.linearVelocity = new Vector3(
                 clampedHorizontal.x,

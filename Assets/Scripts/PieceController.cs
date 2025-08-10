@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public struct RotationState
@@ -36,6 +35,7 @@ public class PieceController : MonoBehaviour
     public float angularDamping = 2f;
     public float angularDampingDefault = 0.1f;
 
+    [Header("Control lockers")]
     private bool isPlacingPiece = false;
     private bool publicControllerLock = false;
     private bool isDragging = false;
