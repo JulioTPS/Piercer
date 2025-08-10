@@ -107,26 +107,16 @@ public class PieceManager : MonoBehaviour
                         fitPieceCoroutine = StartCoroutine(StartFittingPiece());
                     }
                 }
-                else if (isFittingPiece)
-                {
-                    StopFittingPiece();
-                    stuckTimer = 0f;
-                }
                 else
                 {
-                    stuckTimer = 0f;
+                    StopFittingPiece();
                 }
                 lastPosition = activePieceRb.position;
                 activePieceRb.AddForce(movementDirection, ForceMode.Force);
             }
-            else if (isFittingPiece)
-            {
-                StopFittingPiece();
-                stuckTimer = 0f;
-            }
             else
             {
-                stuckTimer = 0f;
+                StopFittingPiece();
             }
             return;
         }
@@ -135,8 +125,10 @@ public class PieceManager : MonoBehaviour
         movementDirection = Vector3.zero;
         rotationState.isRotating = false;
         rotationState.isPressingQ = false;
+
         if (keptPiece != null)
         {
+            Debug.Log("Keeping piece: " + keptPiece.name);
             Rigidbody keptPieceRb = keptPiece.GetComponent<Rigidbody>();
             keptPieceRb.isKinematic = true;
             keptPieceRb.useGravity = false;
@@ -161,6 +153,7 @@ public class PieceManager : MonoBehaviour
         else
         {
             (activePiece, keptPiece) = (keptPiece, activePiece);
+            activePieceRb = activePiece.GetComponent<Rigidbody>();
         }
         swapPieces = true;
         return activePiece;
@@ -234,8 +227,7 @@ public class PieceManager : MonoBehaviour
     {
         activePiece = previewPieces[0];
         activePieceRb = activePiece.GetComponent<Rigidbody>();
-        Rigidbody activePieceeRb = activePiece.GetComponent<Rigidbody>();
-        activePieceeRb.position = spawnPosition;
+        activePieceRb.position = spawnPosition;
         for (int i = 0; i < maxPreviewPieces - 1; i++)
         {
             Piece movingPiece = previewPieces[i + 1];
@@ -324,10 +316,10 @@ public class PieceManager : MonoBehaviour
     {
         if (fitPieceCoroutine != null)
         {
-            stuckTimer = 0f;
             StopCoroutine(fitPieceCoroutine);
             isFittingPiece = false;
         }
+        stuckTimer = 0f;
     }
 }
 
