@@ -58,7 +58,7 @@ public class AmbientSFX : MonoBehaviour
             currentVolume = Mathf.SmoothStep(
                 startVolume,
                 targetVolume,
-                timer / volumeTransitionTime
+                Mathf.SmoothStep(0f, 1f, Mathf.Sqrt(timer / volumeTransitionTime))
             );
         }
         if (timer > volumeTransitionTime + volumeStayTime)
