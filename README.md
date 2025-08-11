@@ -6,6 +6,8 @@ I still have a few less essential features in mind that I might add in the futur
 
 This is a personal project made for the enjoyment of learning, it's not intended for commercialization.
 
+V1.5: I added the features I though were interesting but not as essential. I consider this the final version.
+
 
 
 ## 🪪 License
