@@ -1,7 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using NUnit.Framework.Internal;
-using Unity.VisualScripting;
 using UnityEngine;
 
 public class PieceManager : MonoBehaviour
@@ -284,7 +282,7 @@ public class PieceManager : MonoBehaviour
 
         if (Mathf.Abs(Mathf.DeltaAngle(eulerZ, snappedZ)) <= fittingAngleMargin)
         {
-            isFittingPiece = false;
+            isFittingPiece = true;
             float startingRotation = pieceRbTransform.eulerAngles.z;
             Vector3 startingPosition = pieceRbTransform.position;
             Vector3 targetPosition = new Vector3(
