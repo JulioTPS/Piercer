@@ -105,7 +105,7 @@ public class PieceController : MonoBehaviour
             OnPieceMouseUp();
             isPlacingPiece = true;
             Reset();
-            activePieceRb.GetComponent<Piece>().isActive = false;
+            activePieceRb.GetComponent<Piece>().SetActive(false);
             PieceManager.Instance.SetRotationState(rotationState);
             SetActivePiece(PieceManager.Instance.PlacePiece());
         }
@@ -115,7 +115,7 @@ public class PieceController : MonoBehaviour
             isPlacingPiece = true;
             OnPieceMouseUp();
             Reset();
-            activePieceRb.GetComponent<Piece>().isActive = false;
+            activePieceRb.GetComponent<Piece>().SetActive(false);
             activePieceRb.isKinematic = true;
             activePieceRb.useGravity = false;
             SetActivePiece(PieceManager.Instance.KeepPiece());
@@ -190,7 +190,7 @@ public class PieceController : MonoBehaviour
     private void SetActivePiece(Piece newPiece)
     {
         canKeymove = false;
-        newPiece.isActive = true;
+        newPiece.SetActive(true);
         activePieceTransform = newPiece.transform;
         activePieceRb = newPiece.GetComponent<Rigidbody>();
         activePieceRb.linearDamping = linearDampingDefault;

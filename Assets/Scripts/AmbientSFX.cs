@@ -10,8 +10,8 @@ public class AmbientSFX : MonoBehaviour
     public float minAudioVolume = 0.1f;
     public float maxAudioVolume = 0.3f;
 
-    public float volumeTransitionTime = 3f;
-    public float volumeStayTime = 3f;
+    private float volumeTransitionTime = 5f;
+    private float volumeStayTime = 3f;
     private float timer = 0f;
 
     public float BGMVolume = 0.2f;
@@ -29,7 +29,7 @@ public class AmbientSFX : MonoBehaviour
         startVolume = currentVolume;
         targetVolume = Random.Range(minAudioVolume, maxAudioVolume);
 
-        timerBGM = 60f;
+        timerBGM = 300f;
     }
 
     void Start()

@@ -25,7 +25,7 @@ public class SoundFXManager : MonoBehaviour
 
     void Update() { }
 
-    public void PlaySFX(
+    public float PlaySFX(
         string clipKey,
         Vector3 position = default,
         float volume = 1f,
@@ -38,10 +38,10 @@ public class SoundFXManager : MonoBehaviour
         if (clip == null)
         {
             Debug.LogWarning($"Sound key doesn't exist: {clipKey}");
-            return;
+            return 0f;
         }
 
-        GameObject soundObj = new GameObject("SoundFX");
+        GameObject soundObj = new GameObject("SoundFXOnce");
         soundObj.transform.SetParent(transform);
         AudioSource audioSource = soundObj.AddComponent<AudioSource>();
         audioSource.transform.position = position;
@@ -54,6 +54,7 @@ public class SoundFXManager : MonoBehaviour
         audioSource.minDistance = minAudioDistance;
         audioSource.Play();
         Destroy(soundObj, clip.length);
+        return clip.length;
     }
 
     public AudioSource PlayContinuousSound(
@@ -68,7 +69,7 @@ public class SoundFXManager : MonoBehaviour
     {
         if (audioSource == null)
         {
-            GameObject soundObj = new GameObject("SoundFX");
+            GameObject soundObj = new GameObject("SoundFXContinuous");
             audioSource = soundObj.AddComponent<AudioSource>();
             soundObj.transform.SetParent(transform);
             audioSource.clip = SoundBank.GetRandomClip(clipKey);
@@ -108,12 +109,13 @@ public class SoundFXManager : MonoBehaviour
         audioSource.pitch = pitch;
     }
 
-    public void StopContinuousSound(AudioSource audioSource)
+    public float StopContinuousSound(AudioSource audioSource)
     {
         if (audioSource != null)
         {
             StartCoroutine(StopSoundCoroutine(audioSource));
         }
+        return stoppingLoopTime;
     }
 
     private System.Collections.IEnumerator StopSoundCoroutine(AudioSource audioSource)

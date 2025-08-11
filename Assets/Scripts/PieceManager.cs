@@ -128,7 +128,6 @@ public class PieceManager : MonoBehaviour
 
         if (keptPiece != null)
         {
-            Debug.Log("Keeping piece: " + keptPiece.name);
             Rigidbody keptPieceRb = keptPiece.GetComponent<Rigidbody>();
             keptPieceRb.isKinematic = true;
             keptPieceRb.useGravity = false;
