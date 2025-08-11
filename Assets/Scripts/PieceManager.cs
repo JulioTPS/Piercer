@@ -112,7 +112,10 @@ public class PieceManager : MonoBehaviour
                     StopFittingPiece();
                 }
                 lastPosition = activePieceRb.position;
-                activePieceRb.AddForce(movementDirection, ForceMode.Force);
+                if (!isFittingPiece)
+                {
+                    activePieceRb.AddForce(movementDirection, ForceMode.Force);
+                }
             }
             else
             {
